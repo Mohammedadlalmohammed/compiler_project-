@@ -5,7 +5,7 @@ PROJECT EXPORT FOR LLMs
 PROJECT INFORMATION:
 --------------------------------------------------
 Project Name: مشروع-مترجمات
-Generated On: 2026-01-10 17:40:37 (Asia/Damascus / GMT+03:00)
+Generated On: 2026-01-10 17:41:08 (Asia/Damascus / GMT+03:00)
 Total Files Processed: 1
 Export Tool: Easy Whole Project to Single Text File for LLMs v1.1.0
 Tool Author: Jota / José Guilherme Pandolfi
