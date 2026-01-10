@@ -1,8 +1,50 @@
-grammar project1;
+grammar project;
+options {
+	caseInsensitive = true;
+}
 
-KEYWORDIDENTIFIER : LEFTSQUAREBRACKET IDENTIFIER RIGHTSQUAREBRACKET;
-LEFTSQUAREBRACKET : '[';
-RIGHTSQUAREBRACKET : ']';
+//TEMPTABLE: ATSYMBOL ATSYMBOL IDENTIFIERS;
+DATATYPE: (
+		BIGINT
+		| BIT
+		| DATE
+		| DATETIME
+		| DATETIME2
+		| DATETIMEOFFSET
+		| FLOAT
+		| GEOGRAPHY
+		| GEOMETRY
+		| HIERARCHYID
+		| IMAGE
+		| INT
+		| MONEY
+		| NTEXT
+		| REAL
+		| SMALLDATETIME
+		| SMALLINT
+		| SMALLMONEY
+		| SQL_VARIANT
+		| SYSNAME
+		| TEXT
+		| TIME
+		| TIMESTAMP
+		| TINYINT
+		| UNIQUEIDENTIFIER
+		| CHAR
+		| NCHAR
+		| VARCHAR
+		| NVARCHAR
+		| BINARY
+		| VARBINARY
+		| NUMERIC
+		| DECIMAL
+	);
+NUMBERS: (INTEGERNUMBER | FLOATNUMBER);
+BOOLEANTYPE: (TRUE | FALSE);
+STRING: (LITERALSTRING | BITSTRING | HEXSTRING);
+//USERVARIABLE: ATSYMBOL IDENTIFIER;
+COMMENTS: (MULTILINECOMMIT | SINGLELINECOMMIT) -> skip;
+WS: [ \t\r\n]+ -> skip;
 HIDDEN1 : 'HIDDEN';
 N : 'N';
 XML : 'XML';
@@ -667,7 +709,47 @@ REGR_SYY : 'REGR_SYY';
 ZONE : 'ZONE';
 COMMA : ',';
 RAW : 'RAW';
-IDENTIFIER : [A-Za-z] ;
+BIGINT : 'BIGINT';
+DATETIME : 'DATETIME';
+DATETIME2 : 'DATETIME2';
+DATETIMEOFFSET : 'DATETIMEOFFSET';
+GEOGRAPHY : 'GEOGRAPHY';
+GEOMETRY : 'GEOMETRY';
+HIERARCHYID : 'HIERARCHYID';
+IMAGE : 'IMAGE';
+MONEY : 'MONEY';
+NTEXT : 'NTEXT';
+SMALLDATETIME : 'SMALLDATETIME';
+SMALLMONEY : 'SMALLMONEY';
+SQL_VARIANT : 'SQL_VARIANT';
+SYSNAME : 'SYSNAME';
+TEXT : 'TEXT';
+TINYINT : 'TINYINT';
+UNIQUEIDENTIFIER : 'UNIQUEIDENTIFIER';
+NVARCHAR : 'NVARCHAR';
+VARBINARY : 'VARBINARY';
+IDENTIFIERS: IDENTIFIER | KEYWORDIDENTIFIER;
+IDENTIFIER : STARTIDENTIFIER ENDIDENTIFIER*;
+KEYWORDIDENTIFIER : LEFTSQUAREBRACKET (~']')+ RIGHTSQUAREBRACKET;
+STARTIDENTIFIER : [A-Z_#] ;
+ENDIDENTIFIER : [A-Z_#$@0-9];
+DIGIT: [0-9];
+INTEGERNUMBER: DIGIT+;
+FLOATNUMBER:
+	INTEGERNUMBER (DOT INTEGERNUMBER)? (E INTEGERNUMBER)?;
+E: 'e';
+LITERALSTRING:
+	N? SINGLEQUOTATION (SINGLEQUOTATION SINGLEQUOTATION | ~('\''))* SINGLEQUOTATION;
+BITSTRING: '0b' [01]+;
+HEXSTRING: '0x' [0-9A-F]+;
+MULTILINECOMMIT:
+	STARTMULTILINECOMMIT (MULTILINECOMMIT | (~'*') | STAR ~'/')* ENDMULTILINECOMMIT;
+STARTMULTILINECOMMIT: '/*';
+ENDMULTILINECOMMIT: '*/';
+SINGLELINECOMMIT: MINUS MINUS ~'\n'*;
+LEFTSQUAREBRACKET : '[';
+RIGHTSQUAREBRACKET : ']';
+
 
 
 
@@ -676,18 +758,17 @@ IDENTIFIER : [A-Za-z] ;
 sELECTstatement :
     ( WITH ( ( XMLNAMESPACES COMMA )? ( common_table_expression (COMMA common_table_expression)*  )? ) )?
     query_expression
-    ( ORDER BY order_by_expression )?
+    ( order_byCLASUE )?
     ( fORClause )
-    ( OPTION  LEFTPARENTHESIS  query_hint (COMMA query_hint )*  RIGHTPARENTHESIS  )?;
+    ( OPTION  LEFTPARENTHESIS  query_hint (COMMA query_hint )*  RIGHTPARENTHESIS  )?
+    (SEMICOLON)?;
 
 
 
 query_expression :
     ( query_specification |  LEFTPARENTHESIS  query_expression  RIGHTPARENTHESIS  )
-    (  ( UNION ( ALL )? | EXCEPT | INTERSECT )
-        query_specification |  LEFTPARENTHESIS  query_expression  RIGHTPARENTHESIS
         (( UNION ( ALL )? | EXCEPT | INTERSECT )
-        query_specification |  LEFTPARENTHESIS  query_expression  RIGHTPARENTHESIS)* )?;
+        (query_specification |  LEFTPARENTHESIS  query_expression  RIGHTPARENTHESIS))* ;
 query_specification :
 SELECT ( ALL | DISTINCT )?
     ( TOP  LEFTPARENTHESIS  expression  RIGHTPARENTHESIS  ( PERCENT )? ( WITH TIES )? )?
@@ -727,7 +808,7 @@ predicate :
     | CONTAINS
    LEFTPARENTHESIS  ( column |  STAR  ) COMMA  SINGLEQUOTATION contains_search_condition SINGLEQUOTATION   RIGHTPARENTHESIS
     | FREETEXT  LEFTPARENTHESIS  ( column |  STAR  ) COMMA  SINGLEQUOTATION freetext_string SINGLEQUOTATION   RIGHTPARENTHESIS
-    | expression ( NOT )? IN  LEFTPARENTHESIS  subquery | expression (COMMA (subquery | expression))*  RIGHTPARENTHESIS
+    | expression ( NOT )? IN  LEFTPARENTHESIS  (subquery | expression (COMMA (subquery | expression))*)  RIGHTPARENTHESIS
     | expression (  EQUAL  |  NOTEQUAL  |  NOTEQUAL  |  GREATERTHAN  |  GREATERTHANOREQUAL  |  NOTGREATERTHAN  | LESSTHAN |  LESSTHANOREQUAL  |  NOTLESSTHAN  )
   ( ALL | SOME | ANY )  LEFTPARENTHESIS  subquery  RIGHTPARENTHESIS
     | EXISTS  LEFTPARENTHESIS  subquery  RIGHTPARENTHESIS      );
@@ -748,7 +829,7 @@ edge_alias :
 
 
 
-order_by_expression : ORDER BY order_by_expression
+order_byCLASUE : ORDER BY order_by_expression
     ( COLLATE collation_name )?
     ( ASC | DESC )?
     (COMMA order_by_expression
@@ -768,11 +849,11 @@ offset_fetch :
 
 
 
-fORClause : ( FOR ( BROWSE | xML | JSON) )?  ;
+fORClause : ( FOR ( BROWSE | xML | jSON) )?  ;
 xML :
 XML
 (
-    ( RAW (  LEFTPARENTHESIS   SINGLEQUOTATION elementName SINGLEQUOTATION   RIGHTPARENTHESIS  )? | AUTO )
+    ( RAW (  LEFTPARENTHESIS    elementName    RIGHTPARENTHESIS  )? | AUTO )
     (
         commonDirectivesForXML
         ( COMMA ( XMLDATA | XMLSCHEMA (  LEFTPARENTHESIS   SINGLEQUOTATION targetNameSpaceURI SINGLEQUOTATION   RIGHTPARENTHESIS  )? ) )?
@@ -783,7 +864,7 @@ XML
         commonDirectivesForXML
         ( COMMA XMLDATA )?
     )
-  | PATH (  LEFTPARENTHESIS   SINGLEQUOTATION elementName SINGLEQUOTATION   RIGHTPARENTHESIS  )?
+  | PATH (  LEFTPARENTHESIS    elementName    RIGHTPARENTHESIS  )?
     (
         commonDirectivesForXML
         ( COMMA ELEMENTS ( XSINIL | ABSENT )? )?
@@ -792,7 +873,7 @@ XML
 commonDirectivesForXML :
 ( COMMA BINARY BASE64 )?
 ( COMMA TYPE )?
-( COMMA ROOT (  LEFTPARENTHESIS   SINGLEQUOTATION rootName SINGLEQUOTATION   RIGHTPARENTHESIS  )? )?;
+( COMMA ROOT (  LEFTPARENTHESIS    rootName    RIGHTPARENTHESIS  )? )?;
 jSON :
 JSON
 (
@@ -815,9 +896,9 @@ contains_search_condition :
     )
   |
     (  LEFTPARENTHESIS  contains_search_condition  RIGHTPARENTHESIS
-        ( ( AND | ANDNOT | OR ) )?
+        ( ( AND | aNDNOT | OR ) )?
         contains_search_condition
-        (( ( AND | ANDNOT | OR ) )?
+        (( ( AND | aNDNOT | OR ) )?
         contains_search_condition)*
   )  ;
 simple_term :
@@ -878,37 +959,30 @@ simple_term :
 
 
 groupby : GROUP BY (
-      column MINUS expression
+      column_expression
     | ROLLUP  LEFTPARENTHESIS  group_by_expression (COMMA group_by_expression)*  RIGHTPARENTHESIS
     | CUBE  LEFTPARENTHESIS  group_by_expression (COMMA group_by_expression)*  RIGHTPARENTHESIS
     | GROUPING SETS  LEFTPARENTHESIS  grouping_set (COMMA grouping_set)*   RIGHTPARENTHESIS
     |  LEFTPARENTHESIS  RIGHTPARENTHESIS
 )
 (COMMA (
-      column MINUS expression
+      column_expression
     | ROLLUP  LEFTPARENTHESIS  group_by_expression (COMMA group_by_expression)*  RIGHTPARENTHESIS
     | CUBE  LEFTPARENTHESIS  group_by_expression (COMMA group_by_expression)*  RIGHTPARENTHESIS
     | GROUPING SETS  LEFTPARENTHESIS  grouping_set (COMMA grouping_set)*   RIGHTPARENTHESIS
     |  LEFTPARENTHESIS  RIGHTPARENTHESIS
 ))*;
  group_by_expression :
-      column MINUS expression
-    |  LEFTPARENTHESIS  column MINUS expression (COMMA column_expression)*  RIGHTPARENTHESIS;
+      column_expression
+    |  LEFTPARENTHESIS  column_expression (COMMA column_expression)*  RIGHTPARENTHESIS;
    grouping_set :
        LEFTPARENTHESIS  RIGHTPARENTHESIS
     | grouping_set_item
-    |  LEFTPARENTHESIS  grouping_set_item (COMMA grouping_set)*  RIGHTPARENTHESIS;
+    |  LEFTPARENTHESIS  grouping_set_item (COMMA grouping_set_item)*  RIGHTPARENTHESIS;
   grouping_set_item :
       group_by_expression
     | ROLLUP  LEFTPARENTHESIS  group_by_expression (COMMA group_by_expression)*  RIGHTPARENTHESIS
-    | CUBE  LEFTPARENTHESIS  group_by_expression (COMMA group_by_expression)*  RIGHTPARENTHESIS
-
-
-
-GROUP BY (
-       ALL column MINUS expression (COMMA column_expression)*
-    | column MINUS expression (COMMA column_expression)*  WITH ( CUBE | ROLLUP )
-       );
+    | CUBE  LEFTPARENTHESIS  group_by_expression (COMMA group_by_expression)*  RIGHTPARENTHESIS;
 
 
 
@@ -937,8 +1011,8 @@ tablesample_clause :
         ( REPEATABLE  LEFTPARENTHESIS  repeat_seed  RIGHTPARENTHESIS  )?;
 joined_table :
 (
-    table_source join_type table_source ON search_condition
-    | table_source CROSS JOIN table_source
+    table_source join_type table ON search_condition (join_type table ON search_condition)*
+    | table_source CROSS  table (CROSS JOIN table)*
     | left_table_source ( CROSS | OUTER ) APPLY right_table_source
     | LEFTPARENTHESIS   joined_table RIGHTPARENTHESIS
 );
@@ -1173,9 +1247,9 @@ oUTPUT_CLAUSE :
     ( OUTPUT dml_select_list )?
 );
 dml_select_list :
-( column_name | scalar_expression ) ( ( AS )? column_alias_identifier )?
+( column_name1 | scalar_expression ) ( ( AS )? column_alias_identifier )?
     (COMMA ( column_name | scalar_expression ) ( ( AS )? column_alias_identifier )?)*;
-column_name :
+column_name1 :
 ( DELETED | INSERTED | from_table_name )  DOT  (  STAR  | column_name )
     |  DOLLAR action;
 
@@ -1515,6 +1589,7 @@ column_constraint :
 ( CONSTRAINT constraint_name )?
 (     ( PRIMARY KEY | UNIQUE )
         ( CLUSTERED | NONCLUSTERED )?
+        ( LEFTPARENTHESIS column_name1 (COMMA column_name1)* RIGHTPARENTHESIS )?
         (
             WITH FILLFACTOR  EQUAL  fillfactor
           | WITH  LEFTPARENTHESIS  index_option (COMMA index_option)*  RIGHTPARENTHESIS
@@ -1627,8 +1702,8 @@ create : CREATE TABLE
 (  SEMICOLON  )?;
 data_type :
 ( type_schema_name DOT  )? type_name
-    (  LEFTPARENTHESIS  precision ( COMMA scale )? | max |
-        ( ( CONTENT | DOCUMENT ) )? xml_schema_collection  RIGHTPARENTHESIS  )?;
+    (  LEFTPARENTHESIS  (precision ( COMMA scale )? | max |
+        ( ( CONTENT | DOCUMENT ) )? xml_schema_collection)  RIGHTPARENTHESIS  )?;
 column_index :
  INDEX index_name ( CLUSTERED | NONCLUSTERED )?
     ( WITH  LEFTPARENTHESIS  index_option (COMMA index_option)* RIGHTPARENTHESIS  )?
@@ -1715,12 +1790,23 @@ open_curson : OPEN ( ( ( GLOBAL )? cursor_name ) | cursor_variable_name );
 
 
 
-expression : ( constant | scalar_function | ( table_name DOT )? column | variable
+expression : ( constant | scalar_function | ( table_name DOT )?|  column | variable
     |  LEFTPARENTHESIS  expression  RIGHTPARENTHESIS  |  LEFTPARENTHESIS  scalar_subquery  RIGHTPARENTHESIS
     | ( unary_operator ) expression
     | ranking_windowed_function | aggregate_windowed_function
 ) (( binary_operator ) expression)*;
 
+scalar_expression :
+(
+    constant
+    | scalar_function
+    | variable
+    | LEFTPARENTHESIS expression RIGHTPARENTHESIS
+    | LEFTPARENTHESIS scalar_subquery RIGHTPARENTHESIS
+    | ( unary_operator ) expression
+    | expression ( binary_operator ) expression
+)
+( COLLATE ( windows_collation_name )? )?;
 
 
 
@@ -1729,156 +1815,160 @@ expression : ( constant | scalar_function | ( table_name DOT )? column | variabl
 
 
 
-new_table : ;
-expression_name : ;
-string_expression : ;
-escape_character : ;
-column : ;
-freetext_string : ;
-subquery : ;
-node_table_alias : ;
-node_table_name : ;
-edge_table_alias : ;
-edge_table_name : ;
-collation_name : ;
-offset_row_count_expression : ;
-integer_constant : ;
-fetch_row_count_expression : ;
-word : ;
-phrase : ;
-prefix_term : ;
-proximity_term : ;
-integer : ;
-weight_value : ;
-column_expression : ;
-table_or_view_name : ;
-rowset_function : ;
-bulk_column_alias : ;
-table_alias : ;
-column_alias : ;
-variable : ;
-function_call : ;
-repeat_seed : ;
-left_table_source : ;
-right_table_source : ;
-aggregate_function : ;
-value_column : ;
-pivot_column : ;
-date_time_variable : ;
-date_time_literal : ;
-view_name : ;
-table_name : ;
-field_name : ;
-property_name : ;
-udt_column_name : ;
-argument : ;
-method_name : ;
-integer_value : ;
-numeric_value : ;
-literal_constant : ;
-variable_name : ;
-hint_name : ;
-xml_plan : ;
-exposed_object_name : ;
-point_in_time : ;
-index_value : ;
-index_column_name : ;
-in : ;
-int : ;
-idoc : ;
-nvarchar : ;
-rowpattern : ;
-byte : ;
-flags : ;
-count : ;
-columns : ;
-rowset_function_limited : ;
-table_variable : ;
-cursor_name : ;
-cursor_variable_name : ;
-schema_name : ;
-database_name : ;
-server_name : ;
-scalar_expression : ;
-output_table : ;
-column_alias_identifier : ;
-from_table_name : ;
-action : ;
-execute_statement : ;
-derived_table : ;
-dml_statement_with_output_clause : ;
-type_name : ;
-type_schema_name : ;
-scale : ;
-precision : ;
-xml_schema_collection : ;
-max : ;
-mask_function : ;
-datetime2 : ;
-system_start_time_column_name : ;
-constant_expression : ;
-constraint_name : ;
-system_end_time_column_name : ;
-bigint : ;
-start_transaction_id_column_name : ;
-end_sequence_number_column_name : ;
-start_sequence_number_column_name : ;
-end_transaction_id_column_name : ;
-trigger_name : ;
-source_partition_number_expression : ;
-target_table : ;
-target_partition_number_expression : ;
-default : ;
-filegroup : ;
-partition_scheme_name : ;
-number : ;
-history_table_name : ;
-partition_number : ;
-max_degree_of_parallelism : ;
-column_set_name : ;
-directory_name : ;
-null : ;
-table_predicate_function : ;
-time : ;
-key_name : ;
-increment : ;
-seed : ;
-referenced_table_name : ;
-partition_column_name : ;
-fillfactor : ;
-logical_expression : ;
-ref_column : ;
-partition_number_expression : ;
-computed_column_expression : ;
-ref_table : ;
-filegroup_name : ;
-index_name : ;
-filestream_filegroup_name : ;
-table_constraint : ;
-filter_predicate : ;
-sequence_number_column_name : ;
-transaction_id_column_name : ;
-ledger_view_name : ;
-operation_type_desc_column_name : ;
-operation_type_id : ;
-scalar_function : ;
-constant : ;
-binary_operator : ;
-unary_operator : ;
-aggregate_windowed_function : ;
-ranking_windowed_function : ;
-scalar_subquery : ;
-nvar : ;
-n : ;
-select_statement : ;
-sample_number : ;
-user_defined_function : ;
-option : ;
-targetNameSpaceURI : ;
-cTE_query_definition : ;
-elementName : ;
-rootName : ;
-schemaDeclaration : ;
-offset : ;
-length : ;
-fileTable : ;
+new_table : ( server_name DOT database_name DOT schema_name DOT table_name|  database_name DOT schema_name DOT table_name | schema_name DOT table_name | table_name ) ;
+expression_name : ADD;
+string_expression : STRING | ( server_name DOT database_name DOT schema_name DOT table_name | database_name DOT schema_name DOT table_name | schema_name DOT table_name | table_name );
+escape_character : ADD;
+column : IDENTIFIERS;
+freetext_string : ADD;
+subquery : sELECTstatement;
+node_table_alias : ADD;
+node_table_name : ADD;
+edge_table_alias : ADD;
+edge_table_name : ADD;
+collation_name : IDENTIFIERS;
+offset_row_count_expression :expression;
+integer_constant : NUMBERS;
+fetch_row_count_expression : expression;
+word : ADD;
+phrase : ADD;
+prefix_term : ADD;
+proximity_term : ADD;
+integer : ADD;
+weight_value : ADD;
+column_expression : expression  | LEFTPARENTHESIS column_expression RIGHTPARENTHESIS;
+table_or_view_name : ( server_name DOT database_name DOT schema_name DOT table_name |database_name DOT schema_name DOT table_name | schema_name DOT table_name | table_name );
+rowset_function : ADD;
+bulk_column_alias : ADD;
+table_alias : IDENTIFIERS;
+column_alias : IDENTIFIERS | STRING;
+variable : ATSYMBOL IDENTIFIERS;
+function_call : ADD;
+repeat_seed : ADD;
+left_table_source : table_source;
+right_table_source : table_source;
+aggregate_function : ADD;
+value_column : ADD;
+pivot_column : ADD;
+date_time_variable : ADD;
+date_time_literal : ADD;
+view_name : ADD;
+table_name : IDENTIFIERS ;
+field_name : ADD;
+property_name : ADD;
+udt_column_name : ADD;
+argument : ADD;
+method_name : ADD;
+integer_value : NUMBERS;
+numeric_value : ADD;
+literal_constant : NUMBERS;
+variable_name : IDENTIFIERS;
+hint_name : ADD;
+xml_plan : ADD;
+exposed_object_name : ADD;
+point_in_time : ADD;
+index_value : NUMBERS | IDENTIFIERS;
+index_column_name : ADD;
+in : ADD;
+int : ADD;
+idoc : ADD;
+nvarchar : ADD;
+rowpattern : ADD;
+byte : ADD;
+flags : ADD;
+count : ADD;
+columns : ADD;
+rowset_function_limited : ADD;
+table_variable : ADD;
+cursor_name : ADD;
+cursor_variable_name : ADD;
+schema_name : IDENTIFIERS ;
+database_name : IDENTIFIERS ;
+server_name : IDENTIFIERS ;
+output_table : ADD;
+column_alias_identifier : ADD;
+from_table_name : ADD;
+action : ADD;
+execute_statement : ADD;
+derived_table : LEFTPARENTHESIS subquery RIGHTPARENTHESIS ( ( AS )? table_alias )?;
+dml_statement_with_output_clause : ADD;
+type_name : DATATYPE;
+type_schema_name : ADD;
+scale : ADD;
+precision : NUMBERS;
+xml_schema_collection : ADD;
+max : ADD;
+mask_function : ADD;
+datetime2 : ADD;
+system_start_time_column_name : ADD;
+constant_expression : ADD;
+constraint_name : ADD;
+system_end_time_column_name : ADD;
+bigint : ADD;
+start_transaction_id_column_name : ADD;
+end_sequence_number_column_name : ADD;
+start_sequence_number_column_name : ADD;
+end_transaction_id_column_name : ADD;
+trigger_name : ADD;
+source_partition_number_expression : ADD;
+target_table : ADD;
+target_partition_number_expression : ADD;
+default : ADD;
+filegroup : ADD;
+partition_scheme_name : ADD;
+number : ADD;
+history_table_name : ADD;
+partition_number : ADD;
+max_degree_of_parallelism : ADD;
+column_set_name : ADD;
+directory_name : ADD;
+null : ADD;
+table_predicate_function : ADD;
+time : ADD;
+key_name : ADD;
+increment : ADD;
+seed : ADD;
+referenced_table_name : ADD;
+partition_column_name : ADD;
+fillfactor : ADD;
+logical_expression : ADD;
+ref_column : ADD;
+partition_number_expression : ADD;
+computed_column_expression : ADD;
+ref_table : ADD;
+filegroup_name : ADD;
+index_name : ADD;
+filestream_filegroup_name : ADD;
+table_constraint : ADD;
+filter_predicate : ADD;
+sequence_number_column_name : ADD;
+transaction_id_column_name : ADD;
+ledger_view_name : ADD;
+operation_type_desc_column_name : ADD;
+operation_type_id : ADD;
+scalar_function : IDENTIFIERS LEFTPARENTHESIS ( server_name DOT database_name DOT schema_name DOT table_name| database_name DOT schema_name DOT table_name | schema_name DOT table_name | table_name | STAR | scalar_subquery ) (COMMA (( server_name DOT database_name DOT schema_name DOT table_name |  database_name DOT schema_name DOT table_name | schema_name DOT table_name | table_name | STAR | scalar_subquery )))* RIGHTPARENTHESIS;
+constant : STRING | NUMBERS ;
+binary_operator : MINUS | STAR | PLUS | DIVISION | MODULE;
+unary_operator : ADD;
+aggregate_windowed_function : ADD;
+ranking_windowed_function : ADD;
+scalar_subquery : sELECTstatement | LEFTPARENTHESIS sELECTstatement RIGHTPARENTHESIS;
+nvar : ADD;
+n : ADD;
+select_statement : sELECTstatement;
+sample_number : ADD;
+user_defined_function : ADD;
+option : ADD;
+targetNameSpaceURI : ADD;
+cTE_query_definition : ADD;
+elementName : STRING;
+rootName : ADD;
+schemaDeclaration : ADD;
+offset : ADD;
+length : ADD;
+fileTable : ADD;
+windows_collation_name : ADD;
+order_by_expression : (expression | LEFTPARENTHESIS order_by_expression RIGHTPARENTHESIS) (COMMA (expression | LEFTPARENTHESIS order_by_expression RIGHTPARENTHESIS) )*;
+column_name : IDENTIFIERS;
+
+test : sELECTstatement* EOF;

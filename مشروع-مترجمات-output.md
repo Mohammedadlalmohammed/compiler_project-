@@ -3,7 +3,7 @@
 ## 📊 Project Information
 
 - **Project Name**: `مشروع-مترجمات`
-- **Generated On**: 2026-01-07 20:09:37 (Asia/Damascus / GMT+03:00)
+- **Generated On**: 2026-01-10 17:40:37 (Asia/Damascus / GMT+03:00)
 - **Total Files Processed**: 1
 - **Export Tool**: Easy Whole Project to Single Text File for LLMs v1.1.0
 - **Tool Author**: Jota / José Guilherme Pandolfi
@@ -20,7 +20,7 @@
 ## 🌳 Project Structure
 
 ```
-└── 📄 project.g4 (57.1 KB)
+└── 📄 project.g4 (60.89 KB)
 ```
 
 ## 📑 Table of Contents
@@ -37,7 +37,7 @@
 | Total Directories | 0 |
 | Text Files | 0 |
 | Binary Files | 1 |
-| Total Size | 57.1 KB |
+| Total Size | 60.89 KB |
 
 ### 📄 File Types Distribution
 
