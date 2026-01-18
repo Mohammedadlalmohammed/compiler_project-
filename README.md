@@ -35,11 +35,7 @@ If you make **any modifications** to the `.g4` grammar files, you must regenerat
 Run the following command from the project root directory:
 
 ```bash
-java -jar lib/antlr-4.13.2-complete.jar \
-     -o src/antlr \
-     -Dlanguage=Java \
-     src/antlr/Sql.g4 \
-     -visitor
+java -jar lib/antlr-4.13.2-complete.jar -o src/antlr -Dlanguage=Java src/antlr/Sql.g4 -visitor
 ```
 
 This command:
@@ -54,11 +50,7 @@ This command:
 Compile all Java source files using the following command:
 
 ```bash
-javac -cp ./lib/antlr-4.13.2-complete.jar \
-      -d bin \
-      src/antlr/*.java \
-      src/app/*.java \
-      src/utilsClasses/*.java
+javac -cp ./lib/antlr-4.13.2-complete.jar -d bin src/antlr/*.java src/app/*.java src/utilsClasses/*.java
 ```
 
 This will:
@@ -73,8 +65,7 @@ This will:
 To run the application, execute:
 
 ```bash
-java -cp ".\\lib\\antlr-4.13.2-complete.jar;.\\bin" \
-     app.Main src/tests/test1.txt
+java -cp ".\\lib\\antlr-4.13.2-complete.jar;.\\bin" app.Main src/tests/test1.txt
 ```
 
 Where:
