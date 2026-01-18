@@ -1,4 +1,4 @@
-grammar project1;
+grammar project;
 options {
 	caseInsensitive = true;
 }
