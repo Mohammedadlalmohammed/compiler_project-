@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run Main.class",
+      "request": "launch",
+      "mainClass": "app.Main",
+      "classPaths": [
+        "${workspaceFolder}/bin",
+        "${workspaceFolder}/lib/antlr-4.13.2-complete.jar"
+      ],
+      "args": ["src/tests/test1.txt"]
+    }
+  ]
+}
