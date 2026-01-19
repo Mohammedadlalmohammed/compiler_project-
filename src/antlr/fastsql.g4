@@ -1,4 +1,4 @@
-grammar Sql;
+grammar fastsql;
 options {
 	caseInsensitive = true;
 }
@@ -804,7 +804,7 @@ querySpecification:
 	| surroundedQuerySpecification;
 
 query_specification:
-	select? all? topClause? select_list into? on? fromTable? whereClause? groupby? having? end?;
+	select? all? topClause? select_list into? on? fromTable? where? groupby? having? end?;
 
 topClause: top percent? withTies?;
 
@@ -2186,7 +2186,9 @@ rebuild_option:
 
 create:
 	createKeyword tableKeyword (
-		object
+		database_name dotKeyword schema_name dotKeyword table_name
+		| schema_name dotKeyword table_name
+		| table_name
 	) (asKeyword fileTable)? leftparenthesisKeyword (
 		column_definition
 		| computed_column_definition
@@ -2580,7 +2582,7 @@ action: addKeyword;
 derived_table:
 	leftparenthesisKeyword subquery rightparenthesisKeyword (( asKeyword)? table_alias)?;
 dml_statement_with_output_clause: table;
-type_name: dataType1 | identifiersKeyword;
+type_name: datatypeKeyword | identifiersKeyword;
 type_schema_name: addKeyword;
 scale: numbersKeyword;
 precision: numbersKeyword;
@@ -2694,7 +2696,7 @@ scalar_function:
 			)
 		)*
 	)? (
-		(asKeyword dataType1)? leftparenthesisKeyword (expression* | maxKeyword) rightparenthesisKeyword
+		(asKeyword datatypeKeyword)? leftparenthesisKeyword (expression* | maxKeyword) rightparenthesisKeyword
 	)? rightparenthesisKeyword;
 
 execute_statement: (( execKeyword | executeKeyword))? (
@@ -2831,7 +2833,7 @@ surroundedQuerySpecification:
 
 into: intoKeyword object;
 
-on: onkeyword1 filegroup;
+on: onkeyword filegroup;
 
 cteQueryDefinition:
 	asKeyword leftparenthesis cTE_query_definition rightparenthesis;
@@ -3470,11 +3472,8 @@ cascadeKeyword : CASCADE;
 
 connectionKeyword : CONNECTION;
 
-dataType1 : DATATYPE;
+datatypeKeyword : DATABASE;
 
 havingKeyword : HAVING;
 
-onkeyword1 : ON;
-
- test : ((insert | update | sELECTstatement | create | declare_cursor| open_cursor | fetch_cursor| close_cursor | dellocate_cursor | delete | drop | alter) )* EOF  # Program;
-// test : create EOF # Program;
+onkeyword : ON;

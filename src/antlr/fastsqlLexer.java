@@ -1,4 +1,4 @@
-// Generated from c:/Users/Mohammad/مشروع مترجمات/src/antlr/Sql.g4 by ANTLR 4.13.1
+// Generated from src/antlr/Sql.g4 by ANTLR 4.13.2
 
 	package antlr; 
 
@@ -12,8 +12,8 @@ import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue", "this-escape"})
-public class SqlLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.13.1", RuntimeMetaData.VERSION); }
+public class fastsqlLexer extends Lexer {
+	static { RuntimeMetaData.checkVersion("4.13.2", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -594,7 +594,7 @@ public class SqlLexer extends Lexer {
 	}
 
 
-	public SqlLexer(CharStream input) {
+	public fastsqlLexer(CharStream input) {
 		super(input);
 		_interp = new LexerATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}

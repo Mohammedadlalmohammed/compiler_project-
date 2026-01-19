@@ -1,1 +1,89 @@
-Select * from tableABC Having 4 > 3
+SELECT *
+FROM DimEmployee
+ORDER BY LastName;
+
+SELECT e.*
+FROM DimEmployee AS e
+ORDER BY LastName;
+
+SELECT FirstName,
+       LastName,
+       StartDate AS FirstDay
+FROM DimEmployee
+ORDER BY LastName;
+
+SELECT FirstName,
+       LastName,
+       StartDate AS FirstDay
+FROM DimEmployee
+WHERE EndDate IS NOT NULL
+      AND MaritalStatus = 'M'
+ORDER BY LastName;
+
+SELECT FirstName,
+       LastName,
+       BaseRate,
+       BaseRate * 40 AS GrossPay
+FROM DimEmployee
+ORDER BY LastName;
+
+SELECT DISTINCT Title
+FROM DimEmployee
+ORDER BY Title;
+
+SELECT OrderDateKey,
+       SUM(SalesAmount) AS TotalSales
+FROM FactInternetSales
+GROUP BY OrderDateKey
+ORDER BY OrderDateKey;
+
+SELECT OrderDateKey,
+       PromotionKey,
+       AVG(SalesAmount) AS AvgSales,
+       SUM(SalesAmount) AS TotalSales
+FROM FactInternetSales
+GROUP BY OrderDateKey, PromotionKey
+ORDER BY OrderDateKey;
+
+SELECT OrderDateKey,
+       SUM(SalesAmount) AS TotalSales
+FROM FactInternetSales
+WHERE OrderDateKey >'20020801'
+GROUP BY OrderDateKey
+ORDER BY OrderDateKey;
+
+SELECT SUM(SalesAmount) AS TotalSales
+FROM FactInternetSales
+GROUP BY (OrderDateKey * 10);
+
+SELECT OrderDateKey,
+       SUM(SalesAmount) AS TotalSales
+FROM FactInternetSales
+GROUP BY OrderDateKey
+ORDER BY OrderDateKey;
+
+SELECT OrderDateKey,
+       SUM(SalesAmount) AS TotalSales
+FROM FactInternetSales
+GROUP BY OrderDateKey
+HAVING OrderDateKey > 20010000
+ORDER BY OrderDateKey;
+
+
+
+
+
+
+
+
+
+CREATE TABLE dbo.Cities (  
+     Name VARCHAR(20),  
+     State VARCHAR(20),  
+     Location POINT);  
+
+SELECT Location.Distance (@p)  
+FROM Cities;  
+
+SELECT AVG(UnitPrice) AS [Average Price]  
+FROM Sales.SalesOrderDetail;
