@@ -49,22 +49,32 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 
 	@Override
 	public ASTNode visitQuery_specification(SqlParser.Query_specificationContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
+		List<ASTNode> childrenNodes = new java.util.ArrayList<>();
+		List<String> labels = new java.util.ArrayList<>();
 		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
+			ASTNode child = visit(ctx.getChild(i));
+			if (child != null) {
+				childrenNodes.add(child);
+				String label = "";
+				if (ctx.getChild(i) instanceof SqlParser.Select_listContext) label = "column";
+				else if (ctx.getChild(i) instanceof SqlParser.FromTableContext) label = "from";
+				else if (ctx.getChild(i) instanceof SqlParser.WhereClauseContext) label = "where";
+				labels.add(label);
+			}
 		}
 
-		return new Base(children, "Select statement");
+		return new Base(childrenNodes.toArray(new ASTNode[0]), labels.toArray(new String[0]), "SelectStmt");
 	}
 
 	@Override
 	public ASTNode visitSELECTstatement(SqlParser.SELECTstatementContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
+		List<ASTNode> nodes = new java.util.ArrayList<>();
 		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
+			ASTNode child = visit(ctx.getChild(i));
+			if (child != null) nodes.add(child);
 		}
 
-		return new Base(children, "Select statement");
+		return new Base(nodes.toArray(new ASTNode[0]), "SelectStmt");
 	}
 
 	@Override
@@ -662,12 +672,8 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 
 	@Override
 	public ASTNode visitObjectDotAllColumn(SqlParser.ObjectDotAllColumnContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "ObjectDotAllColumn");
+		String qualifier = ctx.getChild(0).getText();
+		return new Base("AllColumns (Qualifier: \"" + qualifier + "\")");
 	}
 
 	@Override
@@ -692,12 +698,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 
 	@Override
 	public ASTNode visitObjectDotColumn(SqlParser.ObjectDotColumnContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "ObjectDotColumn");
+		return new Base("Identifier " + ctx.getText());
 	}
 
 	@Override
@@ -3382,12 +3383,19 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 
 	@Override
 	public ASTNode visitFromTable(SqlParser.FromTableContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
+		List<ASTNode> nodes = new java.util.ArrayList<>();
+		List<String> labels = new java.util.ArrayList<>();
 		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
+			ASTNode child = visit(ctx.getChild(i));
+			if (child != null) {
+				nodes.add(child);
+				String label = "";
+				if (ctx.getChild(i) instanceof SqlParser.TableContext) label = "table";
+				labels.add(label);
+			}
 		}
 
-		return new Base(children, "FromTable");
+		return new Base(nodes.toArray(new ASTNode[0]), labels.toArray(new String[0]), "FromClause");
 	}
 
 	@Override

@@ -43,6 +43,13 @@ public class Main {
             //
             // ASTNode ast=progVisitor.visit(antlrAST);
             System.out.println(ast.prettyPrint(""));
+            
+            // Step 4: Launch GUI
+             javax.swing.SwingUtilities.invokeLater(() -> {
+                 utilsClasses.ASTViewer viewer = new utilsClasses.ASTViewer(ast);
+                 viewer.setVisible(true);
+             });
+
             if (visitor.semanticsErrors.isEmpty()) {
                 // System.out.println("hi this is run Ok");
             } else {

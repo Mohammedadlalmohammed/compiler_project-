@@ -10,12 +10,18 @@ public class TwoPartTableName extends ASTNode {
 		this.table_name = table_name;
 	}
 
-	@Override
-	public String prettyPrint(String indent) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(indent).append("TableReference:\n");
-		sb.append(indent + "\t").append("Schema Name : " + schema_name).append("\n");
-		sb.append(indent + "\t").append("Table Name : " + table_name).append("\n");
-		return sb.toString();
-	}
+    @Override
+    public java.util.List<ASTNode> getChildren() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "TableReference (Schema: " + schema_name + ", Table: " + table_name + ")";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }

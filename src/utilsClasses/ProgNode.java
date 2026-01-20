@@ -13,16 +13,20 @@ public class ProgNode extends ASTNode{
 		children.add(node);
 	}
 
-	@Override
-	public String prettyPrint(String indent) {
-		// TODO Auto-generated method stub
-		StringBuilder sb= new StringBuilder();
-		sb.append(indent).append("Program:\n");
-		for (ASTNode child : children) {
-			sb.append(child.prettyPrint(indent+"	")).append("\n");
-		}
-		return sb.toString().trim();
-	}
+    @Override
+    public List<ASTNode> getChildren() {
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "Program";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 	
 
 }

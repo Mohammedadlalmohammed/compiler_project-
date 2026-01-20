@@ -1,5 +1,7 @@
 package utilsClasses;
 
+import java.util.List;
+
 public class Addition extends ASTNode {
 //	Expression left;
 //	Expression right;
@@ -18,12 +20,21 @@ public class Addition extends ASTNode {
 //		return left.toString() +  " + " + right.toString();
 //	}
 
-	@Override
-	public String prettyPrint(String indent) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(indent).append("Addition:\n");
-        sb.append(left.prettyPrint(indent + "	")).append("\n");
-        sb.append(right.prettyPrint(indent + "	"));
-        return sb.toString();
-	}
+    @Override
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new java.util.ArrayList<>();
+        if (left != null) children.add(left);
+        if (right != null) children.add(right);
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "Addition";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }
