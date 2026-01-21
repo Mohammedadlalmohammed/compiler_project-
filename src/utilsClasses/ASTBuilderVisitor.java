@@ -99,6 +99,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 
 		return new OnePartTableName(child1);
 	}
+
 	@Override
 	public ASTNode visitOption_query_hint(SqlParser.Option_query_hintContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
@@ -991,26 +992,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitStretch_configuration(SqlParser.Stretch_configurationContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Stretch_configuration");
-	}
-
-	@Override
-	public ASTNode visitTable_stretch_options(SqlParser.Table_stretch_optionsContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Table_stretch_options");
-	}
-
-	@Override
 	public ASTNode visitSingle_partition_rebuild__option(SqlParser.Single_partition_rebuild__optionContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -1148,26 +1129,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "Table_index");
-	}
-
-	@Override
-	public ASTNode visitLedger_option(SqlParser.Ledger_optionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Ledger_option");
-	}
-
-	@Override
-	public ASTNode visitLedger_view_option(SqlParser.Ledger_view_optionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Ledger_view_option");
 	}
 
 	@Override
@@ -1521,16 +1482,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitNew_table(SqlParser.New_tableContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "New_table");
-	}
-
-	@Override
 	public ASTNode visitExpression_name(SqlParser.Expression_nameContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -1842,12 +1793,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 
 	@Override
 	public ASTNode visitAggregate_function(SqlParser.Aggregate_functionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Aggregate_function");
+		return new Base(ctx.getChild(0).getText());
 	}
 
 	@Override
@@ -2061,26 +2007,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitIn(SqlParser.InContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "In");
-	}
-
-	@Override
-	public ASTNode visitInt(SqlParser.IntContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Int");
-	}
-
-	@Override
 	public ASTNode visitIdoc(SqlParser.IdocContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -2088,16 +2014,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "Idoc");
-	}
-
-	@Override
-	public ASTNode visitNvarchar(SqlParser.NvarcharContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Nvarchar");
 	}
 
 	@Override
@@ -2111,16 +2027,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitByte(SqlParser.ByteContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Byte");
-	}
-
-	@Override
 	public ASTNode visitFlags(SqlParser.FlagsContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -2128,26 +2034,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "Flags");
-	}
-
-	@Override
-	public ASTNode visitCount(SqlParser.CountContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Count");
-	}
-
-	@Override
-	public ASTNode visitColumns(SqlParser.ColumnsContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Columns");
 	}
 
 	@Override
@@ -2341,16 +2227,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitAction(SqlParser.ActionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Action");
-	}
-
-	@Override
 	public ASTNode visitDerived_table(SqlParser.Derived_tableContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -2478,16 +2354,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "System_end_time_column_name");
-	}
-
-	@Override
-	public ASTNode visitBigint(SqlParser.BigintContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Bigint");
 	}
 
 	@Override
@@ -2661,16 +2527,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitTable_predicate_function(SqlParser.Table_predicate_functionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Table_predicate_function");
-	}
-
-	@Override
 	public ASTNode visitTime(SqlParser.TimeContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -2838,66 +2694,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "Node_table");
-	}
-
-	@Override
-	public ASTNode visitFilter_predicate(SqlParser.Filter_predicateContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Filter_predicate");
-	}
-
-	@Override
-	public ASTNode visitSequence_number_column_name(SqlParser.Sequence_number_column_nameContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Sequence_number_column_name");
-	}
-
-	@Override
-	public ASTNode visitTransaction_id_column_name(SqlParser.Transaction_id_column_nameContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Transaction_id_column_name");
-	}
-
-	@Override
-	public ASTNode visitLedger_view_name(SqlParser.Ledger_view_nameContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Ledger_view_name");
-	}
-
-	@Override
-	public ASTNode visitOperation_type_desc_column_name(SqlParser.Operation_type_desc_column_nameContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Operation_type_desc_column_name");
-	}
-
-	@Override
-	public ASTNode visitOperation_type_id(SqlParser.Operation_type_idContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Operation_type_id");
 	}
 
 	@Override
@@ -3071,26 +2867,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitAggregate_windowed_function(SqlParser.Aggregate_windowed_functionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Aggregate_windowed_function");
-	}
-
-	@Override
-	public ASTNode visitRanking_windowed_function(SqlParser.Ranking_windowed_functionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Ranking_windowed_function");
-	}
-
-	@Override
 	public ASTNode visitScalar_subquery(SqlParser.Scalar_subqueryContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -3098,16 +2874,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "Scalar_subquery");
-	}
-
-	@Override
-	public ASTNode visitNvar(SqlParser.NvarContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Nvar");
 	}
 
 	@Override
@@ -3151,16 +2917,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitOption(SqlParser.OptionContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Option");
-	}
-
-	@Override
 	public ASTNode visitTargetNameSpaceURI(SqlParser.TargetNameSpaceURIContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -3201,16 +2957,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitSchemaDeclaration(SqlParser.SchemaDeclarationContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "SchemaDeclaration");
-	}
-
-	@Override
 	public ASTNode visitOffset(SqlParser.OffsetContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -3231,16 +2977,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 
 	@Override
-	public ASTNode visitFileTable(SqlParser.FileTableContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "FileTable");
-	}
-
-	@Override
 	public ASTNode visitOpendatasource(SqlParser.OpendatasourceContext ctx) {
 		ASTNode[] children = new ASTNode[ctx.getChildCount()];
 		for (int i = 0; i < ctx.getChildCount(); i++) {
@@ -3258,16 +2994,6 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "Init_string");
-	}
-
-	@Override
-	public ASTNode visitWindows_collation_name(SqlParser.Windows_collation_nameContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Windows_collation_name");
 	}
 
 	@Override
@@ -3514,1268 +3240,1979 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	public ASTNode visitContainsKeyword(SqlParser.ContainsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLeftparenthesisKeyword(SqlParser.LeftparenthesisKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitStarKeyword(SqlParser.StarKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCommaKeyword(SqlParser.CommaKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSinglequotationKeyword(SqlParser.SinglequotationKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRightparenthesisKeyword(SqlParser.RightparenthesisKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFreetextKeyword(SqlParser.FreetextKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNotKeyword(SqlParser.NotKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitInKeyword(SqlParser.InKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitEqualKeyword(SqlParser.EqualKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNotequalKeyword(SqlParser.NotequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitGreaterthanKeyword(SqlParser.GreaterthanKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitGreaterthanorequalKeyword(SqlParser.GreaterthanorequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNotgreaterthanKeyword(SqlParser.NotgreaterthanKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLessthanKeyword(SqlParser.LessthanKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLessthanorequalKeyword(SqlParser.LessthanorequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNotlessthanKeyword(SqlParser.NotlessthanKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAllKeyword(SqlParser.AllKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSomeKeyword(SqlParser.SomeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAnyKeyword(SqlParser.AnyKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitExistsKeyword(SqlParser.ExistsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLikeKeyword(SqlParser.LikeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitEscapeKeyword(SqlParser.EscapeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMinusKeyword(SqlParser.MinusKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOrderKeyword(SqlParser.OrderKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitByKeyword(SqlParser.ByKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCollateKeyword(SqlParser.CollateKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAscKeyword(SqlParser.AscKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDescKeyword(SqlParser.DescKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOffsetKeyword(SqlParser.OffsetKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRowKeyword(SqlParser.RowKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRowsKeyword(SqlParser.RowsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFetchKeyword(SqlParser.FetchKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFirstKeyword(SqlParser.FirstKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNextKeyword(SqlParser.NextKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOnlyKeyword(SqlParser.OnlyKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitForKeyword(SqlParser.ForKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitBrowseKeyword(SqlParser.BrowseKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitXmlKeyword(SqlParser.XmlKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRawKeyword(SqlParser.RawKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAutoKeyword(SqlParser.AutoKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitXmldataKeyword(SqlParser.XmldataKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitXmlschemaKeyword(SqlParser.XmlschemaKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitElementsKeyword(SqlParser.ElementsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitXsinilKeyword(SqlParser.XsinilKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAbsentKeyword(SqlParser.AbsentKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitExplicitKeyword(SqlParser.ExplicitKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPathKeyword(SqlParser.PathKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitBinaryKeyword(SqlParser.BinaryKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTypeKeyword(SqlParser.TypeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRootKeyword(SqlParser.RootKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitJsonKeyword(SqlParser.JsonKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAndKeyword(SqlParser.AndKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOrKeyword(SqlParser.OrKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDoublequotationKeyword(SqlParser.DoublequotationKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFormsofKeyword(SqlParser.FormsofKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitInflectionalKeyword(SqlParser.InflectionalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitThesaurusKeyword(SqlParser.ThesaurusKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNearKeyword(SqlParser.NearKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMaxKeyword(SqlParser.MaxKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTrueKeyword(SqlParser.TrueKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFalseKeyword(SqlParser.FalseKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitIsaboutKeyword(SqlParser.IsaboutKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitWeightKeyword(SqlParser.WeightKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAndoperationKeyword(SqlParser.AndoperationKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOroperationKeyword(SqlParser.OroperationKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitGroupKeyword(SqlParser.GroupKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRollupKeyword(SqlParser.RollupKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCubeKeyword(SqlParser.CubeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitGroupingKeyword(SqlParser.GroupingKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSetsKeyword(SqlParser.SetsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitWithKeyword(SqlParser.WithKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOpenxmlKeyword(SqlParser.OpenxmlKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAtsymbolKeyword(SqlParser.AtsymbolKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDotKeyword(SqlParser.DotKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTablesampleKeyword(SqlParser.TablesampleKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSystemKeyword(SqlParser.SystemKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPercentKeyword(SqlParser.PercentKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRepeatableKeyword(SqlParser.RepeatableKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOnKeyword(SqlParser.OnKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCrossKeyword(SqlParser.CrossKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitJoinKeyword(SqlParser.JoinKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOuterKeyword(SqlParser.OuterKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitApplyKeyword(SqlParser.ApplyKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitInnerKeyword(SqlParser.InnerKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLeftKeyword(SqlParser.LeftKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRightKeyword(SqlParser.RightKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFullKeyword(SqlParser.FullKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPivotKeyword(SqlParser.PivotKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUnpivotKeyword(SqlParser.UnpivotKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOfKeyword(SqlParser.OfKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitToKeyword(SqlParser.ToKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitBetweenKeyword(SqlParser.BetweenKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitContainedKeyword(SqlParser.ContainedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitIdentityKeyword(SqlParser.IdentityKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRowguidKeyword(SqlParser.RowguidKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTempKeyword(SqlParser.TempKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitHashKeyword(SqlParser.HashKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitConcatKeyword(SqlParser.ConcatKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMergeKeyword(SqlParser.MergeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUnionKeyword(SqlParser.UnionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLoopKeyword(SqlParser.LoopKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitExpandKeyword(SqlParser.ExpandKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitViewsKeyword(SqlParser.ViewsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFastKeyword(SqlParser.FastKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitForceKeyword(SqlParser.ForceKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDisableKeyword(SqlParser.DisableKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitExternalpushdownKeyword(SqlParser.ExternalpushdownKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitScaleoutexecutionKeyword(SqlParser.ScaleoutexecutionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitKeepKeyword(SqlParser.KeepKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPlanKeyword(SqlParser.PlanKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitKeepfixedKeyword(SqlParser.KeepfixedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMaxdopKeyword(SqlParser.MaxdopKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMaxrecursionKeyword(SqlParser.MaxrecursionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOptimizeKeyword(SqlParser.OptimizeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUnknownKeyword(SqlParser.UnknownKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitParameterizationKeyword(SqlParser.ParameterizationKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSimpleKeyword(SqlParser.SimpleKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitForcedKeyword(SqlParser.ForcedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitQuerytraceonKeyword(SqlParser.QuerytraceonKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRecompileKeyword(SqlParser.RecompileKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRobustKeyword(SqlParser.RobustKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUseKeyword(SqlParser.UseKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitHintKeyword(SqlParser.HintKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNKeyword(SqlParser.NKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTableKeyword(SqlParser.TableKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTimestampKeyword(SqlParser.TimestampKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNoexpandKeyword(SqlParser.NoexpandKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitIndexKeyword(SqlParser.IndexKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitForceseekKeyword(SqlParser.ForceseekKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitForcescanKeyword(SqlParser.ForcescanKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitHoldlockKeyword(SqlParser.HoldlockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNolockKeyword(SqlParser.NolockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNowaitKeyword(SqlParser.NowaitKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPaglockKeyword(SqlParser.PaglockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReadcommittedKeyword(SqlParser.ReadcommittedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReadcommittedlockKeyword(SqlParser.ReadcommittedlockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReadpastKeyword(SqlParser.ReadpastKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReaduncommittedKeyword(SqlParser.ReaduncommittedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRepeatablereadKeyword(SqlParser.RepeatablereadKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRowlockKeyword(SqlParser.RowlockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSerializableKeyword(SqlParser.SerializableKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSnapshotKeyword(SqlParser.SnapshotKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTablockKeyword(SqlParser.TablockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTablockxKeyword(SqlParser.TablockxKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUpdlockKeyword(SqlParser.UpdlockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitXlockKeyword(SqlParser.XlockKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitKeepidentityKeyword(SqlParser.KeepidentityKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitKeepdefaultsKeyword(SqlParser.KeepdefaultsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRemoteKeyword(SqlParser.RemoteKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReduceKeyword(SqlParser.ReduceKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReplicateKeyword(SqlParser.ReplicateKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRedistributeKeyword(SqlParser.RedistributeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUpdateKeyword(SqlParser.UpdateKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSetKeyword(SqlParser.SetKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDefaultKeyword(SqlParser.DefaultKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNullKeyword(SqlParser.NullKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitWriteKeyword(SqlParser.WriteKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPlusequalKeyword(SqlParser.PlusequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMinusequalKeyword(SqlParser.MinusequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMultipleequalKeyword(SqlParser.MultipleequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDivisionequalKeyword(SqlParser.DivisionequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitModuleequalKeyword(SqlParser.ModuleequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAndequalKeyword(SqlParser.AndequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitXorequalKeyword(SqlParser.XorequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOrequalKeyword(SqlParser.OrequalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitWhereKeyword(SqlParser.WhereKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCurrentKeyword(SqlParser.CurrentKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitGlobalKeyword(SqlParser.GlobalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOptionKeyword(SqlParser.OptionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSemicolonKeyword(SqlParser.SemicolonKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOutputKeyword(SqlParser.OutputKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDeletedKeyword(SqlParser.DeletedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitInsertedKeyword(SqlParser.InsertedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDollarKeyword(SqlParser.DollarKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitActionKeyword(SqlParser.ActionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDeleteKeyword(SqlParser.DeleteKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitInsertKeyword(SqlParser.InsertKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitValuesKeyword(SqlParser.ValuesKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSelectKeyword(SqlParser.SelectKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTiesKeyword(SqlParser.TiesKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUsingKeyword(SqlParser.UsingKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitWhenKeyword(SqlParser.WhenKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMatchedKeyword(SqlParser.MatchedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitThenKeyword(SqlParser.ThenKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTargetKeyword(SqlParser.TargetKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSourceKeyword(SqlParser.SourceKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDropKeyword(SqlParser.DropKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitIfKeyword(SqlParser.IfKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAlterKeyword(SqlParser.AlterKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitColumnKeyword(SqlParser.ColumnKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSparseKeyword(SqlParser.SparseKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAddKeyword(SqlParser.AddKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRowguidcolKeyword(SqlParser.RowguidcolKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPersistedKeyword(SqlParser.PersistedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReplicationKeyword(SqlParser.ReplicationKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMaskedKeyword(SqlParser.MaskedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFunctionKeyword(SqlParser.FunctionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOnlineKeyword(SqlParser.OnlineKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOffKeyword(SqlParser.OffKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCheckKeyword(SqlParser.CheckKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNocheckKeyword(SqlParser.NocheckKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitGeneratedKeyword(SqlParser.GeneratedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAlwaysKeyword(SqlParser.AlwaysKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitStartKeyword(SqlParser.StartKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitConstraintKeyword(SqlParser.ConstraintKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitEndKeyword(SqlParser.EndKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPeriodKeyword(SqlParser.PeriodKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitEnableKeyword(SqlParser.EnableKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitTriggerKeyword(SqlParser.TriggerKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSwitchKeyword(SqlParser.SwitchKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPartitionKeyword(SqlParser.PartitionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitInfiniteKeyword(SqlParser.InfiniteKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDayKeyword(SqlParser.DayKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDaysKeyword(SqlParser.DaysKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitWeekKeyword(SqlParser.WeekKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitWeeksKeyword(SqlParser.WeeksKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMonthKeyword(SqlParser.MonthKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMonthsKeyword(SqlParser.MonthsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitYearKeyword(SqlParser.YearKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitYearsKeyword(SqlParser.YearsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRebuildKeyword(SqlParser.RebuildKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitMoveKeyword(SqlParser.MoveKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPausedKeyword(SqlParser.PausedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOutboundKeyword(SqlParser.OutboundKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitInboundKeyword(SqlParser.InboundKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitNoneKeyword(SqlParser.NoneKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPageKeyword(SqlParser.PageKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitColumnstoreKeyword(SqlParser.ColumnstoreKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitMinutesKeyword(SqlParser.MinutesKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitSelfKeyword(SqlParser.SelfKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitBlockersKeyword(SqlParser.BlockersKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFilestreamKeyword(SqlParser.FilestreamKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitEncryptedKeyword(SqlParser.EncryptedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDeterministicKeyword(SqlParser.DeterministicKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRandomizedKeyword(SqlParser.RandomizedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAlgorithmKeyword(SqlParser.AlgorithmKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitContentKeyword(SqlParser.ContentKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDocumentKeyword(SqlParser.DocumentKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPrimaryKeyword(SqlParser.PrimaryKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitKeyKeyword(SqlParser.KeyKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUniqueKeyword(SqlParser.UniqueKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitClusteredKeyword(SqlParser.ClusteredKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitNonclusteredKeyword(SqlParser.NonclusteredKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
-	public ASTNode visitFillfactorKeyword(SqlParser.FillfactorKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitForeignKeyword(SqlParser.ForeignKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitReferencesKeyword(SqlParser.ReferencesKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPartitionsKeyword(SqlParser.PartitionsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitResumableKeyword(SqlParser.ResumableKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitCreateKeyword(SqlParser.CreateKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitIncludeKeyword(SqlParser.IncludeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCloseKeyword(SqlParser.CloseKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDeallocateKeyword(SqlParser.DeallocateKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDeclareKeyword(SqlParser.DeclareKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCursorKeyword(SqlParser.CursorKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLocalKeyword(SqlParser.LocalKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitScrollKeyword(SqlParser.ScrollKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitStaticKeyword(SqlParser.StaticKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitKeysetKeyword(SqlParser.KeysetKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDynamicKeyword(SqlParser.DynamicKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOptimisticKeyword(SqlParser.OptimisticKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPriorKeyword(SqlParser.PriorKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLastKeyword(SqlParser.LastKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAbsoluteKeyword(SqlParser.AbsoluteKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRelativeKeyword(SqlParser.RelativeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOpenKeyword(SqlParser.OpenKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitBulkKeyword(SqlParser.BulkKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitCodepageKeyword(SqlParser.CodepageKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAcpKeyword(SqlParser.AcpKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOemKeyword(SqlParser.OemKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDatafiletypeKeyword(SqlParser.DatafiletypeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCharKeyword(SqlParser.CharKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitRowterminatorKeyword(SqlParser.RowterminatorKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFieldterminatorKeyword(SqlParser.FieldterminatorKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFormatKeyword(SqlParser.FormatKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitCsvKeyword(SqlParser.CsvKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFieldquoteKeyword(SqlParser.FieldquoteKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFirstrowKeyword(SqlParser.FirstrowKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLastrowKeyword(SqlParser.LastrowKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFormatfileKeyword(SqlParser.FormatfileKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitMaxerrorsKeyword(SqlParser.MaxerrorsKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitErrorfileKeyword(SqlParser.ErrorfileKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitKeepnullsKeyword(SqlParser.KeepnullsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitBatchsizeKeyword(SqlParser.BatchsizeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitOpenrowsetKeyword(SqlParser.OpenrowsetKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
-	public ASTNode visitNumbersKeyword(SqlParser.NumbersKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitStringKeyword(SqlParser.StringKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitIdentifiersKeyword(SqlParser.IdentifiersKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitOpenqueryKeyword(SqlParser.OpenqueryKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitExecKeyword(SqlParser.ExecKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitExecuteKeyword(SqlParser.ExecuteKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitPlusKeyword(SqlParser.PlusKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitLoginKeyword(SqlParser.LoginKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUserKeyword(SqlParser.UserKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAtKeyword(SqlParser.AtKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitResultKeyword(SqlParser.ResultKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitUndefinedKeyword(SqlParser.UndefinedKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitObjectKeyword(SqlParser.ObjectKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDivisionKeyword(SqlParser.DivisionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitModuleKeyword(SqlParser.ModuleKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitOpendatasourceKeyword(SqlParser.OpendatasourceKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitExceptKeyword(SqlParser.ExceptKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitIntersectKeyword(SqlParser.IntersectKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitDistinctKeyword(SqlParser.DistinctKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitGoKeyword(SqlParser.GoKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitAsKeyword(SqlParser.AsKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitFromKeyword(SqlParser.FromKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
-	public ASTNode visitIsKeyword(SqlParser.IsKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
-	public ASTNode visitTopKeyword(SqlParser.TopKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
-	public ASTNode visitIntoKeyword(SqlParser.IntoKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
-	public ASTNode visitNoKeyword(SqlParser.NoKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
-	public ASTNode visitMatchKeyword(SqlParser.MatchKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
-	}
-@Override
+
+	@Override
 	public ASTNode visitCascadeKeyword(SqlParser.CascadeKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitConnectionKeyword(SqlParser.ConnectionKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitDataType1(SqlParser.DataType1Context ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
+	public ASTNode visitTime_to_pass(SqlParser.Time_to_passContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTime_to_execute(SqlParser.Time_to_executeContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTimeout(SqlParser.TimeoutContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitWaitfor(SqlParser.WaitforContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitCommon_table_expression(SqlParser.Common_table_expressionContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitColumn_name1(SqlParser.Column_name1Context ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitIf(SqlParser.IfContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitWhile(SqlParser.WhileContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitStatement_block(SqlParser.Statement_blockContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitSql_statement(SqlParser.Sql_statementContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitBoolean_expression(SqlParser.Boolean_expressionContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitColumns_count(SqlParser.Columns_countContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitOpenrowset2(SqlParser.Openrowset2Context ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitDatetime2(SqlParser.Datetime2Context ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitGo(SqlParser.GoContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitUse(SqlParser.UseContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTruncate(SqlParser.TruncateContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitColumnstoreKeyword(SqlParser.ColumnstoreKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitNonclusteredKeyword(SqlParser.NonclusteredKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitFillfactorKeyword(SqlParser.FillfactorKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitCreateKeyword(SqlParser.CreateKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitBulkKeyword(SqlParser.BulkKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitMaxerrorsKeyword(SqlParser.MaxerrorsKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitOpenrowsetKeyword(SqlParser.OpenrowsetKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitNumbersKeyword(SqlParser.NumbersKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitOpenqueryKeyword(SqlParser.OpenqueryKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitOpendatasourceKeyword(SqlParser.OpendatasourceKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitDistinctKeyword(SqlParser.DistinctKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitIsKeyword(SqlParser.IsKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTopKeyword(SqlParser.TopKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitIntoKeyword(SqlParser.IntoKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitNoKeyword(SqlParser.NoKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitMatchKeyword(SqlParser.MatchKeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
 	public ASTNode visitHavingKeyword(SqlParser.HavingKeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
-@Override
+
+	@Override
 	public ASTNode visitOnkeyword1(SqlParser.Onkeyword1Context ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTruncatekeyword(SqlParser.TruncatekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitData_sourcekeyword(SqlParser.Data_sourcekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitRows_per_batchkeyword(SqlParser.Rows_per_batchkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitSystem_timekeyword(SqlParser.System_timekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitMax_grant_percentkeyword(SqlParser.Max_grant_percentkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitMin_grant_percentkeyword(SqlParser.Min_grant_percentkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitSpatial_window_max_cellskeyword(SqlParser.Spatial_window_max_cellskeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitElsekeyword(SqlParser.ElsekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitSequence_numberkeyword(SqlParser.Sequence_numberkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitChange_trackingkeyword(SqlParser.Change_trackingkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTrack_columns_updatedkeyword(SqlParser.Track_columns_updatedkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitFilestream_onkeyword(SqlParser.Filestream_onkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitSystem_versioningkeyword(SqlParser.System_versioningkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitHistory_tablekeyword(SqlParser.History_tablekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitData_consistency_checkkeyword(SqlParser.Data_consistency_checkkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitHistory_retention_periodkeyword(SqlParser.History_retention_periodkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitData_deletionkeyword(SqlParser.Data_deletionkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitFilter_columnkeyword(SqlParser.Filter_columnkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitRetention_periodkeyword(SqlParser.Retention_periodkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitColumn_setkeyword(SqlParser.Column_setkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitLock_escalationkeyword(SqlParser.Lock_escalationkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitFiletable_directorykeyword(SqlParser.Filetable_directorykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitRemote_data_archivekeyword(SqlParser.Remote_data_archivekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitOff_without_data_recoverykeyword(SqlParser.Off_without_data_recoverykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitFilter_predicatekeyword(SqlParser.Filter_predicatekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitMigration_statekeyword(SqlParser.Migration_statekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitSort_in_tempdbkeyword(SqlParser.Sort_in_tempdbkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitData_compressionkeyword(SqlParser.Data_compressionkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitWait_at_low_prioritykeyword(SqlParser.Wait_at_low_prioritykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitMax_durationkeyword(SqlParser.Max_durationkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitAbort_after_waitkeyword(SqlParser.Abort_after_waitkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitColumn_encryption_keykeyword(SqlParser.Column_encryption_keykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitEncryption_typekeyword(SqlParser.Encryption_typekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitPad_indexkeyword(SqlParser.Pad_indexkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitIgnore_dup_keykeyword(SqlParser.Ignore_dup_keykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitStatistics_norecomputekeyword(SqlParser.Statistics_norecomputekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitAllow_row_lockskeyword(SqlParser.Allow_row_lockskeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitAllow_page_lockskeyword(SqlParser.Allow_page_lockskeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitOptimize_for_sequential_keykeyword(SqlParser.Optimize_for_sequential_keykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitXml_compressionkeyword(SqlParser.Xml_compressionkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTextimage_onkeyword(SqlParser.Textimage_onkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitLedger_viewkeyword(SqlParser.Ledger_viewkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitAppend_onlykeyword(SqlParser.Append_onlykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTransaction_id_column_namekeyword(SqlParser.Transaction_id_column_namekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitSequence_number_column_namekeyword(SqlParser.Sequence_number_column_namekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitDelaykeyword(SqlParser.DelaykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTildekeyword(SqlParser.TildekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTimekeyword(SqlParser.TimekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTimeoutkeyword(SqlParser.TimeoutkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitOperation_type_column_namekeyword(SqlParser.Operation_type_column_namekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitForward_onlykeyword(SqlParser.Forward_onlykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitRead_onlykeyword(SqlParser.Read_onlykeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitScroll_lockskeyword(SqlParser.Scroll_lockskeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitFormatfile_data_sourcekeyword(SqlParser.Formatfile_data_sourcekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitErrorfile_data_sourcekeyword(SqlParser.Errorfile_data_sourcekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitBeginkeyword(SqlParser.BeginkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitTransaction_idkeyword(SqlParser.Transaction_idkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitKilobytes_per_batchkeyword(SqlParser.Kilobytes_per_batchkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitWhilekeyword(SqlParser.WhilekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitBreakkeyword(SqlParser.BreakkeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitContinuekeyword(SqlParser.ContinuekeywordContext ctx) {
+		return new Base(ctx.getChild(0).getText());
+	}
+
+	@Override
+	public ASTNode visitWaitforkeyword(SqlParser.WaitforkeywordContext ctx) {
 		return new Base(ctx.getChild(0).getText());
 	}
 }

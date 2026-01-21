@@ -3,15 +3,11 @@ package utilsClasses;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.Token;
-
 import antlr.SqlBaseVisitor;
 import antlr.SqlParser;
 import antlr.SqlParser.Select_listContext;
-import antlr.SqlParser.NumberContext;
 import antlr.SqlParser.ProgramContext;
-import antlr.SqlParser.VariableContext;
+import antlr.SqlParser.*;
 
 public class ASTBuilderVisitor1 extends SqlBaseVisitor<ASTNode> {
 
@@ -78,6 +74,36 @@ public class ASTBuilderVisitor1 extends SqlBaseVisitor<ASTNode> {
 		}
 
 		return new Base(children, "Select statement");
+	}
+
+	@Override
+	public ASTNode visitTruncatekeyword(SqlParser.TruncatekeywordContext ctx) {
+		ASTNode[] children = new ASTNode[ctx.getChildCount()];
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			children[i] = visit(ctx.getChild(i));
+		}
+
+		return new Base(children, "Truncatekeyword");
+	}
+
+	@Override
+	public ASTNode visitGo(SqlParser.GoContext ctx) {
+		ASTNode[] children = new ASTNode[ctx.getChildCount()];
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			children[i] = visit(ctx.getChild(i));
+		}
+
+		return new Base(children, "Go");
+	}
+
+	@Override
+	public ASTNode visitUse(SqlParser.UseContext ctx) {
+		ASTNode[] children = new ASTNode[ctx.getChildCount()];
+		for (int i = 0; i < ctx.getChildCount(); i++) {
+			children[i] = visit(ctx.getChild(i));
+		}
+
+		return new Base(children, "Use");
 	}
 
 	@Override
@@ -196,13 +222,14 @@ public class ASTBuilderVisitor1 extends SqlBaseVisitor<ASTNode> {
 	}
 
 	// @Override
-	// public ASTNode visitOperatorPredicate(SqlParser.OperatorPredicateContext ctx) {
-	// 	ASTNode[] children = new ASTNode[3];
-	// 	children[0] = visit(ctx.getChild(0));
-	// 	children[1] = visit(ctx.getChild(1));
-	// 	children[2] = visit(ctx.getChild(2));
+	// public ASTNode visitOperatorPredicate(SqlParser.OperatorPredicateContext ctx)
+	// {
+	// ASTNode[] children = new ASTNode[3];
+	// children[0] = visit(ctx.getChild(0));
+	// children[1] = visit(ctx.getChild(1));
+	// children[2] = visit(ctx.getChild(2));
 
-	// 	return new Base(children, "Predicate");
+	// return new Base(children, "Predicate");
 	// }
 
 	@Override
@@ -235,6 +262,17 @@ public class ASTBuilderVisitor1 extends SqlBaseVisitor<ASTNode> {
 
 	@Override
 	public ASTNode visitSetOperations(SqlParser.SetOperationsContext ctx) {
+		String constant = ctx.getChild(0).getText();
+		return new Base(constant);
+	}
+
+	@Override
+	public ASTNode visitTruncate(SqlParser.TruncateContext ctx) {
+		String constant = ctx.getChild(0).getText();
+		return new Base(constant);
+	}
+	@Override
+	public ASTNode visitGoKeyword(SqlParser.GoKeywordContext ctx) {
 		String constant = ctx.getChild(0).getText();
 		return new Base(constant);
 	}

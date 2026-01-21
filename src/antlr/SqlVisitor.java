@@ -31,6 +31,30 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitQuery_expression(SqlParser.Query_expressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SqlParser#time_to_pass}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTime_to_pass(SqlParser.Time_to_passContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#time_to_execute}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTime_to_execute(SqlParser.Time_to_executeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#timeout}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTimeout(SqlParser.TimeoutContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#waitfor}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWaitfor(SqlParser.WaitforContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SqlParser#querySpecification}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -514,6 +538,36 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMerge(SqlParser.MergeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SqlParser#if}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIf(SqlParser.IfContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#while}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhile(SqlParser.WhileContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#statement_block}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement_block(SqlParser.Statement_blockContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#sql_statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSql_statement(SqlParser.Sql_statementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#boolean_expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBoolean_expression(SqlParser.Boolean_expressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SqlParser#target_table}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -592,23 +646,17 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTable_option(SqlParser.Table_optionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link SqlParser#max}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMax(SqlParser.MaxContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link SqlParser#filetable_option}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFiletable_option(SqlParser.Filetable_optionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#stretch_configuration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStretch_configuration(SqlParser.Stretch_configurationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#table_stretch_options}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTable_stretch_options(SqlParser.Table_stretch_optionsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#single_partition_rebuild__option}.
 	 * @param ctx the parse tree
@@ -694,18 +742,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTable_index(SqlParser.Table_indexContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#ledger_option}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLedger_option(SqlParser.Ledger_optionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#ledger_view_option}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLedger_view_option(SqlParser.Ledger_view_optionContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#close_cursor}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -729,6 +765,12 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFetch_cursor(SqlParser.Fetch_cursorContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#n}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitN(SqlParser.NContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#open_cursor}.
 	 * @param ctx the parse tree
@@ -915,12 +957,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitKilobytes_per_batch(SqlParser.Kilobytes_per_batchContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#new_table}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNew_table(SqlParser.New_tableContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#expression_name}.
 	 * @param ctx the parse tree
@@ -1240,29 +1276,11 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIndex_column_name(SqlParser.Index_column_nameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#in}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIn(SqlParser.InContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#int}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInt(SqlParser.IntContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#idoc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitIdoc(SqlParser.IdocContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#nvarchar}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNvarchar(SqlParser.NvarcharContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#rowpattern}.
 	 * @param ctx the parse tree
@@ -1270,29 +1288,17 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRowpattern(SqlParser.RowpatternContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#byte}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitByte(SqlParser.ByteContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#flags}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFlags(SqlParser.FlagsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#count}.
+	 * Visit a parse tree produced by {@link SqlParser#columns_count}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCount(SqlParser.CountContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#columns}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitColumns(SqlParser.ColumnsContext ctx);
+	T visitColumns_count(SqlParser.Columns_countContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#openquery}.
 	 * @param ctx the parse tree
@@ -1414,12 +1420,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFrom_table_name(SqlParser.From_table_nameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#action}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAction(SqlParser.ActionContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#derived_table}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1462,12 +1462,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitXml_schema_collection(SqlParser.Xml_schema_collectionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#max}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMax(SqlParser.MaxContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#mask_function}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1503,12 +1497,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSystem_end_time_column_name(SqlParser.System_end_time_column_nameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#bigint}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBigint(SqlParser.BigintContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#start_transaction_id_column_name}.
 	 * @param ctx the parse tree
@@ -1612,12 +1600,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNull(SqlParser.NullContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#table_predicate_function}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTable_predicate_function(SqlParser.Table_predicate_functionContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#time}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1720,42 +1702,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNode_table(SqlParser.Node_tableContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#filter_predicate}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFilter_predicate(SqlParser.Filter_predicateContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#sequence_number_column_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSequence_number_column_name(SqlParser.Sequence_number_column_nameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#transaction_id_column_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitTransaction_id_column_name(SqlParser.Transaction_id_column_nameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#ledger_view_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLedger_view_name(SqlParser.Ledger_view_nameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#operation_type_desc_column_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOperation_type_desc_column_name(SqlParser.Operation_type_desc_column_nameContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#operation_type_id}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOperation_type_id(SqlParser.Operation_type_idContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#scalar_function}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1773,6 +1719,18 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExecute_option(SqlParser.Execute_optionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#go}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGo(SqlParser.GoContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#use}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUse(SqlParser.UseContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#result_sets_definition}.
 	 * @param ctx the parse tree
@@ -1858,35 +1816,11 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUnary_operator(SqlParser.Unary_operatorContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#aggregate_windowed_function}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAggregate_windowed_function(SqlParser.Aggregate_windowed_functionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#ranking_windowed_function}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRanking_windowed_function(SqlParser.Ranking_windowed_functionContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#scalar_subquery}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitScalar_subquery(SqlParser.Scalar_subqueryContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#nvar}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNvar(SqlParser.NvarContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#n}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitN(SqlParser.NContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#select_statement}.
 	 * @param ctx the parse tree
@@ -1905,12 +1839,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitUser_defined_function(SqlParser.User_defined_functionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#option}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitOption(SqlParser.OptionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#targetNameSpaceURI}.
 	 * @param ctx the parse tree
@@ -1936,12 +1864,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRootName(SqlParser.RootNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#schemaDeclaration}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitSchemaDeclaration(SqlParser.SchemaDeclarationContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#offset}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1954,12 +1876,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLength(SqlParser.LengthContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link SqlParser#fileTable}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFileTable(SqlParser.FileTableContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link SqlParser#opendatasource}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -1971,12 +1887,6 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitInit_string(SqlParser.Init_stringContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link SqlParser#windows_collation_name}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWindows_collation_name(SqlParser.Windows_collation_nameContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#order_by_expression}.
 	 * @param ctx the parse tree
@@ -2097,6 +2007,12 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitOn(SqlParser.OnContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#truncate}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTruncate(SqlParser.TruncateContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link SqlParser#cteQueryDefinition}.
 	 * @param ctx the parse tree
@@ -4023,6 +3939,378 @@ public interface SqlVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitOnkeyword1(SqlParser.Onkeyword1Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#truncatekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTruncatekeyword(SqlParser.TruncatekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#data_sourcekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitData_sourcekeyword(SqlParser.Data_sourcekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#rows_per_batchkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRows_per_batchkeyword(SqlParser.Rows_per_batchkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#system_timekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSystem_timekeyword(SqlParser.System_timekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#max_grant_percentkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMax_grant_percentkeyword(SqlParser.Max_grant_percentkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#min_grant_percentkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMin_grant_percentkeyword(SqlParser.Min_grant_percentkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#spatial_window_max_cellskeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSpatial_window_max_cellskeyword(SqlParser.Spatial_window_max_cellskeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#elsekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitElsekeyword(SqlParser.ElsekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#sequence_numberkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSequence_numberkeyword(SqlParser.Sequence_numberkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#change_trackingkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitChange_trackingkeyword(SqlParser.Change_trackingkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#track_columns_updatedkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTrack_columns_updatedkeyword(SqlParser.Track_columns_updatedkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#filestream_onkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFilestream_onkeyword(SqlParser.Filestream_onkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#system_versioningkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSystem_versioningkeyword(SqlParser.System_versioningkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#history_tablekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHistory_tablekeyword(SqlParser.History_tablekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#data_consistency_checkkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitData_consistency_checkkeyword(SqlParser.Data_consistency_checkkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#history_retention_periodkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHistory_retention_periodkeyword(SqlParser.History_retention_periodkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#data_deletionkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitData_deletionkeyword(SqlParser.Data_deletionkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#filter_columnkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFilter_columnkeyword(SqlParser.Filter_columnkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#retention_periodkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRetention_periodkeyword(SqlParser.Retention_periodkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#column_setkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColumn_setkeyword(SqlParser.Column_setkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#lock_escalationkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLock_escalationkeyword(SqlParser.Lock_escalationkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#filetable_directorykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFiletable_directorykeyword(SqlParser.Filetable_directorykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#remote_data_archivekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRemote_data_archivekeyword(SqlParser.Remote_data_archivekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#off_without_data_recoverykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOff_without_data_recoverykeyword(SqlParser.Off_without_data_recoverykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#filter_predicatekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFilter_predicatekeyword(SqlParser.Filter_predicatekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#migration_statekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMigration_statekeyword(SqlParser.Migration_statekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#sort_in_tempdbkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSort_in_tempdbkeyword(SqlParser.Sort_in_tempdbkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#data_compressionkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitData_compressionkeyword(SqlParser.Data_compressionkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#wait_at_low_prioritykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWait_at_low_prioritykeyword(SqlParser.Wait_at_low_prioritykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#max_durationkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMax_durationkeyword(SqlParser.Max_durationkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#abort_after_waitkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAbort_after_waitkeyword(SqlParser.Abort_after_waitkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#column_encryption_keykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitColumn_encryption_keykeyword(SqlParser.Column_encryption_keykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#encryption_typekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEncryption_typekeyword(SqlParser.Encryption_typekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#pad_indexkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPad_indexkeyword(SqlParser.Pad_indexkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#ignore_dup_keykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIgnore_dup_keykeyword(SqlParser.Ignore_dup_keykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#statistics_norecomputekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatistics_norecomputekeyword(SqlParser.Statistics_norecomputekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#allow_row_lockskeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAllow_row_lockskeyword(SqlParser.Allow_row_lockskeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#allow_page_lockskeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAllow_page_lockskeyword(SqlParser.Allow_page_lockskeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#optimize_for_sequential_keykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOptimize_for_sequential_keykeyword(SqlParser.Optimize_for_sequential_keykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#xml_compressionkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitXml_compressionkeyword(SqlParser.Xml_compressionkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#textimage_onkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTextimage_onkeyword(SqlParser.Textimage_onkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#ledger_viewkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLedger_viewkeyword(SqlParser.Ledger_viewkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#append_onlykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAppend_onlykeyword(SqlParser.Append_onlykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#transaction_id_column_namekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTransaction_id_column_namekeyword(SqlParser.Transaction_id_column_namekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#sequence_number_column_namekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSequence_number_column_namekeyword(SqlParser.Sequence_number_column_namekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#delaykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDelaykeyword(SqlParser.DelaykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#tildekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTildekeyword(SqlParser.TildekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#timekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTimekeyword(SqlParser.TimekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#timeoutkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTimeoutkeyword(SqlParser.TimeoutkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#operation_type_column_namekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitOperation_type_column_namekeyword(SqlParser.Operation_type_column_namekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#forward_onlykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForward_onlykeyword(SqlParser.Forward_onlykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#read_onlykeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRead_onlykeyword(SqlParser.Read_onlykeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#scroll_lockskeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitScroll_lockskeyword(SqlParser.Scroll_lockskeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#formatfile_data_sourcekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFormatfile_data_sourcekeyword(SqlParser.Formatfile_data_sourcekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#errorfile_data_sourcekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitErrorfile_data_sourcekeyword(SqlParser.Errorfile_data_sourcekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#beginkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBeginkeyword(SqlParser.BeginkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#transaction_idkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTransaction_idkeyword(SqlParser.Transaction_idkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#kilobytes_per_batchkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitKilobytes_per_batchkeyword(SqlParser.Kilobytes_per_batchkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#whilekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhilekeyword(SqlParser.WhilekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#breakkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBreakkeyword(SqlParser.BreakkeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#continuekeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContinuekeyword(SqlParser.ContinuekeywordContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link SqlParser#waitforkeyword}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWaitforkeyword(SqlParser.WaitforkeywordContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code Program}
 	 * labeled alternative in {@link SqlParser#test}.

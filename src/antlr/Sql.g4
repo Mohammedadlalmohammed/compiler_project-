@@ -7,6 +7,12 @@ options {
 }
 
 //TEMPTABLE: ATSYMBOL ATSYMBOL IDENTIFIERS;
+TIMEOUT: 'TIMEOUT';
+SUM: 'SUM';
+COUNT: 'COUNT';
+AVG: 'AVG';
+MIN: 'MIN';
+DELAY: 'DELAY';
 OEM: 'OEM';
 ACP: 'ACP';
 CSV: 'CSV';
@@ -463,7 +469,7 @@ PLUS: '+';
 DIVISION: '/';
 SINGLEQUOTATION: '\'';
 DOUBLEQUOTATION: '"';
-Tilde: '~';
+TILDE: '~';
 OROPERATION: '|';
 ANDOPERATION: '&';
 Exclamation: '!';
@@ -794,10 +800,18 @@ sELECTstatement:
 	)? (fORClause)? (option_query_hint)? (end)?;
 
 option_query_hint:
-	option leftparenthesis query_hint (comma query_hint)* rightparenthesis;
+	optionKeyword leftparenthesis query_hint (comma query_hint)* rightparenthesis;
 
 query_expression:
 	querySpecification (setOperations querySpecification)*;
+time_to_pass: string_expression;
+time_to_execute: string_expression;
+timeout: integer_value;
+waitfor:
+	waitforkeyword (
+		delaykeyword time_to_pass
+		| timekeyword time_to_execute
+	);
 
 querySpecification:
 	query_specification
@@ -845,16 +859,21 @@ between: betweenKeyword;
 is: isKeyword;
 distinct: distinctKeyword;
 
-
 predicate:
 	expression compareOperator expression
 	| likeCondition
 	| expression (not)? between expression and expression
 	| expression is ( not)? null
 	| expression is (not)? distinct fromKeyword
-	| containsKeyword leftparenthesisKeyword (column | starKeyword) commaKeyword singlequotationKeyword contains_search_condition
-		singlequotationKeyword rightparenthesisKeyword
-	| freetextKeyword leftparenthesisKeyword (column | starKeyword) commaKeyword singlequotationKeyword freetext_string singlequotationKeyword
+	| containsKeyword leftparenthesisKeyword (
+		column
+		| starKeyword
+	) commaKeyword singlequotationKeyword contains_search_condition singlequotationKeyword
+		rightparenthesisKeyword
+	| freetextKeyword leftparenthesisKeyword (
+		column
+		| starKeyword
+	) commaKeyword singlequotationKeyword freetext_string singlequotationKeyword
 		rightparenthesisKeyword
 	| expression (notKeyword)? inKeyword leftparenthesisKeyword (
 		subquery
@@ -870,7 +889,8 @@ predicate:
 		| lessthanKeyword
 		| lessthanorequalKeyword
 		| notlessthanKeyword
-	) (allKeyword | someKeyword | anyKeyword) leftparenthesisKeyword subquery rightparenthesisKeyword
+	) (allKeyword | someKeyword | anyKeyword) leftparenthesisKeyword subquery
+		rightparenthesisKeyword
 	| existsKeyword leftparenthesisKeyword subquery rightparenthesisKeyword;
 
 likeCondition:
@@ -882,10 +902,12 @@ graph_search_pattern:
 	(
 		node_alias (
 			(
-				lessthanKeyword minusKeyword leftparenthesisKeyword edge_alias rightparenthesisKeyword minusKeyword
+				lessthanKeyword minusKeyword leftparenthesisKeyword edge_alias
+					rightparenthesisKeyword minusKeyword
 			)
 			| (
-				minusKeyword leftparenthesisKeyword edge_alias rightparenthesisKeyword minusKeyword greaterthanKeyword
+				minusKeyword leftparenthesisKeyword edge_alias rightparenthesisKeyword minusKeyword
+					greaterthanKeyword
 			) node_alias
 		)
 	);
@@ -893,21 +915,19 @@ node_alias: node_table_name | node_table_alias;
 edge_alias: edge_table_name | edge_table_alias;
 
 order_byCLASUE:
-	orderKeyword byKeyword order_by_expression (collateKeyword collation_name)? (
-		ascKeyword
-		| descKeyword
-	)? (
-		commaKeyword order_by_expression (collateKeyword collation_name)? (
-			ascKeyword
-			| descKeyword
-		)?
+	orderKeyword byKeyword order_by_expression (
+		collateKeyword collation_name
+	)? (ascKeyword | descKeyword)? (
+		commaKeyword order_by_expression (
+			collateKeyword collation_name
+		)? (ascKeyword | descKeyword)?
 	)* (offset_fetch)?;
 offset_fetch:
 	(
-		offsetKeyword (integer_constant | offset_row_count_expression) (
-			rowKeyword
-			| rowsKeyword
-		) (
+		offsetKeyword (
+			integer_constant
+			| offset_row_count_expression
+		) (rowKeyword | rowsKeyword) (
 			fetchKeyword (firstKeyword | nextKeyword) (
 				integer_constant
 				| fetch_row_count_expression
@@ -919,36 +939,55 @@ fORClause: forKeyword ( browseKeyword | xML | jSON);
 xML:
 	xmlKeyword (
 		(
-			rawKeyword (leftparenthesisKeyword elementName rightparenthesisKeyword)?
+			rawKeyword (
+				leftparenthesisKeyword elementName rightparenthesisKeyword
+			)?
 			| autoKeyword
 		) (
 			commonDirectivesForXML (
 				commaKeyword (
 					xmldataKeyword
 					| xmlschemaKeyword (
-						leftparenthesisKeyword singlequotationKeyword targetNameSpaceURI singlequotationKeyword
-							rightparenthesisKeyword
+						leftparenthesisKeyword singlequotationKeyword targetNameSpaceURI
+							singlequotationKeyword rightparenthesisKeyword
 					)?
 				)
-			)? (commaKeyword elementsKeyword ( xsinilKeyword | absentKeyword))??
+			)? (
+				commaKeyword elementsKeyword (
+					xsinilKeyword
+					| absentKeyword
+				)
+			)??
 		)
-		| explicitKeyword ( commonDirectivesForXML ( commaKeyword xmldataKeyword)?)
-		| pathKeyword (leftparenthesisKeyword elementName rightparenthesisKeyword)? (
+		| explicitKeyword (
+			commonDirectivesForXML (commaKeyword xmldataKeyword)?
+		)
+		| pathKeyword (
+			leftparenthesisKeyword elementName rightparenthesisKeyword
+		)? (
 			commonDirectivesForXML (
-				commaKeyword elementsKeyword ( xsinilKeyword | absentKeyword)?
+				commaKeyword elementsKeyword (
+					xsinilKeyword
+					| absentKeyword
+				)?
 			)?
 		)
 	);
 commonDirectivesForXML:
-	(commaKeyword binaryKeyword BASE64)? (commaKeyword typeKeyword)? (
-		commaKeyword rootKeyword (leftparenthesisKeyword rootName rightparenthesisKeyword)?
+	(commaKeyword binaryKeyword BASE64)? (
+		commaKeyword typeKeyword
+	)? (
+		commaKeyword rootKeyword (
+			leftparenthesisKeyword rootName rightparenthesisKeyword
+		)?
 	)?;
 jSON:
 	jsonKeyword (
 		(autoKeyword | pathKeyword) (
 			(
 				commaKeyword rootKeyword (
-					leftparenthesisKeyword singlequotationKeyword rootName singlequotationKeyword rightparenthesisKeyword
+					leftparenthesisKeyword singlequotationKeyword rootName singlequotationKeyword
+						rightparenthesisKeyword
 				)?
 			)? (commaKeyword INCLUDE_NULL_VALUES)? (
 				commaKeyword WITHOUT_ARRAY_WRAPPER
@@ -971,31 +1010,47 @@ contains_search_condition:
 			(( andKeyword | aNDNOT | orKeyword))? contains_search_condition
 		)*
 	);
-simple_term: ( word | doublequotationKeyword phrase doublequotationKeyword);
+simple_term: (
+		word
+		| doublequotationKeyword phrase doublequotationKeyword
+	);
 prefixterm:
 	(
 		doublequotationKeyword word starKeyword doublequotationKeyword
 		| doublequotationKeyword phrase starKeyword doublequotationKeyword
 	);
 generation_term:
-	formsofKeyword leftparenthesisKeyword (inflectionalKeyword | thesaurusKeyword) commaKeyword simple_term (
-		commaKeyword simple_term
-	)* rightparenthesisKeyword;
+	formsofKeyword leftparenthesisKeyword (
+		inflectionalKeyword
+		| thesaurusKeyword
+	) commaKeyword simple_term (commaKeyword simple_term)* rightparenthesisKeyword;
 generic_proximity_term:
 	(simple_term | prefix_term) (
-		(( nearKeyword | Tilde) ( simple_term | prefix_term)) (
-			(( nearKeyword | Tilde) ( simple_term | prefix_term))
+		(
+			(nearKeyword | tildekeyword) (
+				simple_term
+				| prefix_term
+			)
+		) (
+			(
+				(nearKeyword | tildekeyword) (
+					simple_term
+					| prefix_term
+				)
+			)
 		)*
 	);
 custom_proximity_term:
 	nearKeyword leftparenthesisKeyword (
 		(simple_term | prefix_term) (
-			commaKeyword ( simple_term | prefix_term)
+			commaKeyword (simple_term | prefix_term)
 		)*
 		| leftparenthesisKeyword (simple_term | prefix_term) (
-			commaKeyword ( simple_term | prefix_term)
+			commaKeyword (simple_term | prefix_term)
 		)* rightparenthesisKeyword (
-			commaKeyword maximum_distance (commaKeyword match_order)?
+			commaKeyword maximum_distance (
+				commaKeyword match_order
+			)?
 		)?
 	) rightparenthesisKeyword;
 maximum_distance: ( integer | maxKeyword);
@@ -1007,7 +1062,9 @@ weighted_term:
 			| prefix_term
 			| generation_term
 			| proximity_term
-		) (weightKeyword leftparenthesisKeyword weight_value rightparenthesisKeyword)?
+		) (
+			weightKeyword leftparenthesisKeyword weight_value rightparenthesisKeyword
+		)?
 	) (
 		commaKeyword (
 			(
@@ -1021,7 +1078,7 @@ weighted_term:
 		)
 	)* rightparenthesisKeyword;
 and: ( andKeyword | andoperationKeyword);
-aNDNOT: ( andKeyword notKeyword | andoperationKeyword Exclamation);
+aNDNOT: (andKeyword notKeyword | andoperationKeyword Exclamation);
 or: ( orKeyword | oroperationKeyword);
 
 groupby:
@@ -1054,11 +1111,15 @@ groupby:
 	)*;
 group_by_expression:
 	column_expression
-	| leftparenthesisKeyword column_expression (commaKeyword column_expression)* rightparenthesisKeyword;
+	| leftparenthesisKeyword column_expression (
+		commaKeyword column_expression
+	)* rightparenthesisKeyword;
 grouping_set:
 	leftparenthesisKeyword rightparenthesisKeyword
 	| grouping_set_item
-	| leftparenthesisKeyword grouping_set_item (commaKeyword grouping_set_item)* rightparenthesisKeyword;
+	| leftparenthesisKeyword grouping_set_item (
+		commaKeyword grouping_set_item
+	)* rightparenthesisKeyword;
 grouping_set_item:
 	group_by_expression
 	| rollupKeyword leftparenthesisKeyword group_by_expression (
@@ -1076,10 +1137,12 @@ table:
 
 table_source:
 	(
-		object (forKeyword SYSTEM_TIME system_time)? (( asKeyword)? table_alias)? (
-			tablesample_clause
-		)? (
-			withKeyword leftparenthesisKeyword table_hint (commaKeyword? table_hint)* rightparenthesisKeyword
+		object (forKeyword system_timekeyword system_time)? (
+			( asKeyword)? table_alias
+		)? (tablesample_clause)? (
+			withKeyword leftparenthesisKeyword table_hint (
+				commaKeyword? table_hint
+			)* rightparenthesisKeyword
 		)?
 		| rowset_function (( asKeyword)? table_alias)? (
 			leftparenthesisKeyword bulk_column_alias (
@@ -1089,14 +1152,18 @@ table_source:
 		| user_defined_function ( ( asKeyword)? table_alias)?
 		| openxmlKeyword openxml_clause
 		| derived_table (( asKeyword)? table_alias)? (
-			leftparenthesisKeyword column_alias (commaKeyword column_alias)* rightparenthesisKeyword
+			leftparenthesisKeyword column_alias (
+				commaKeyword column_alias
+			)* rightparenthesisKeyword
 		)?
-		| atsymbolKeyword variable ( ( asKeyword)? table_alias)?
+		| atsymbolKeyword variable (( asKeyword)? table_alias)?
 		| '#' variable ( ( asKeyword)? table_alias)?
 		| atsymbolKeyword variable dotKeyword function_call leftparenthesisKeyword expression (
 			commaKeyword expression
 		)* rightparenthesisKeyword (( asKeyword)? table_alias)? (
-			leftparenthesisKeyword column_alias (commaKeyword column_alias)* rightparenthesisKeyword
+			leftparenthesisKeyword column_alias (
+				commaKeyword column_alias
+			)* rightparenthesisKeyword
 		)?
 	);
 tablesample_clause:
@@ -1111,51 +1178,74 @@ joined_table:
 		table_source join_type table onKeyword search_condition (
 			join_type table onKeyword search_condition
 		)*
-		| table_source crossKeyword table (crossKeyword joinKeyword table)*
+		| table_source crossKeyword table (
+			crossKeyword joinKeyword table
+		)*
 		| left_table_source (crossKeyword | outerKeyword) applyKeyword right_table_source
 		| leftparenthesisKeyword joined_table rightparenthesisKeyword
 	);
 join_type:
-	(( innerKeyword | ( ( leftKeyword | rightKeyword | fullKeyword) ( outerKeyword)?)) ( join_hint)?)? joinKeyword;
+	(
+		(
+			innerKeyword
+			| (
+				(leftKeyword | rightKeyword | fullKeyword) (
+					outerKeyword
+				)?
+			)
+		) (join_hint)?
+	)? joinKeyword;
 pivoted_table:
-	table_source pivotKeyword pivot_clause (( asKeyword)? table_alias)?;
+	table_source pivotKeyword pivot_clause (
+		( asKeyword)? table_alias
+	)?;
 pivot_clause:
 	leftparenthesisKeyword aggregate_function leftparenthesisKeyword value_column (
 		commaKeyword? value_column
-	)* rightparenthesisKeyword forKeyword pivot_column inKeyword leftparenthesisKeyword column_list rightparenthesisKeyword
-		rightparenthesisKeyword;
+	)* rightparenthesisKeyword forKeyword pivot_column inKeyword leftparenthesisKeyword column_list
+		rightparenthesisKeyword rightparenthesisKeyword;
 unpivoted_table:
-	table_source unpivotKeyword unpivot_clause (( asKeyword)? table_alias)?;
+	table_source unpivotKeyword unpivot_clause (
+		( asKeyword)? table_alias
+	)?;
 unpivot_clause:
-	leftparenthesisKeyword value_column forKeyword pivot_column inKeyword leftparenthesisKeyword column_list rightparenthesisKeyword
-		rightparenthesisKeyword;
+	leftparenthesisKeyword value_column forKeyword pivot_column inKeyword leftparenthesisKeyword
+		column_list rightparenthesisKeyword rightparenthesisKeyword;
 column_list: column_name (commaKeyword column_name)*;
 system_time:
 	(
 		asKeyword ofKeyword date_time
 		| fromKeyword start_date_time toKeyword end_date_time
 		| betweenKeyword start_date_time andKeyword end_date_time
-		| containedKeyword inKeyword leftparenthesisKeyword start_date_time commaKeyword end_date_time rightparenthesisKeyword
+		| containedKeyword inKeyword leftparenthesisKeyword start_date_time commaKeyword
+			end_date_time rightparenthesisKeyword
 		| allKeyword
 	);
-date_time: date_time_literal | atsymbolKeyword date_time_variable;
+date_time:
+	date_time_literal
+	| atsymbolKeyword date_time_variable;
 start_date_time:
 	date_time_literal
 	| atsymbolKeyword date_time_variable;
-end_date_time: date_time_literal | atsymbolKeyword date_time_variable;
+end_date_time:
+	date_time_literal
+	| atsymbolKeyword date_time_variable;
 
-allColumn: starKeyword;
+allColumn: starKeyword | object dotKeyword starKeyword;
 objectDotAllColumn: object dotKeyword starKeyword;
 select_list:
 	(
 		allColumn
-		| objectDotAllColumn
 		| column_or_expression
 		| column_alias equalKeyword expression
 	) (commaKeyword (select_list))*;
 
 column_or_expression: (
-		(object dotKeyword)? (column_name | identityKeyword | rowguidKeyword)
+		(object dotKeyword)? (
+			column_name
+			| identityKeyword
+			| rowguidKeyword
+		)
 		| udt_column_name (
 			(dotKeyword | tempKeyword tempKeyword) (
 				( property_name | field_name)
@@ -1166,26 +1256,29 @@ column_or_expression: (
 		)?
 		| expression
 	) columnAliasRule?;
-objectDotColumn: (object dotKeyword)? (column_name | identityKeyword | rowguidKeyword);
+objectDotColumn: (object dotKeyword)? (
+		column_name
+		| identityKeyword
+		| rowguidKeyword
+	);
 columnAliasRule: asKeyword? column_alias;
-
 
 query_hint:
 	(
 		( hashKeyword | orderKeyword) groupKeyword
-		| ( concatKeyword | hashKeyword | mergeKeyword) unionKeyword
-		| ( loopKeyword | mergeKeyword | hashKeyword) joinKeyword
+		| (concatKeyword | hashKeyword | mergeKeyword) unionKeyword
+		| (loopKeyword | mergeKeyword | hashKeyword) joinKeyword
 		| DISABLE_OPTIMIZED_PLAN_FORCING
 		| expandKeyword viewsKeyword
 		| fastKeyword integer_value
 		| forceKeyword orderKeyword
-		| ( forceKeyword | disableKeyword) externalpushdownKeyword
-		| ( forceKeyword | disableKeyword) scaleoutexecutionKeyword
+		| (forceKeyword | disableKeyword) externalpushdownKeyword
+		| (forceKeyword | disableKeyword) scaleoutexecutionKeyword
 		| IGNORE_NONCLUSTERED_COLUMNSTORE_INDEX
 		| keepKeyword planKeyword
 		| keepfixedKeyword planKeyword
-		| MAX_GRANT_PERCENT equalKeyword numeric_value
-		| MIN_GRANT_PERCENT equalKeyword numeric_value
+		| max_grant_percentkeyword equalKeyword numeric_value
+		| min_grant_percentkeyword equalKeyword numeric_value
 		| maxdopKeyword integer_value
 		| maxrecursionKeyword integer_value
 		| NO_PERFORMANCE_SPOOL
@@ -1199,18 +1292,20 @@ query_hint:
 			)
 		)* rightparenthesisKeyword
 		| optimizeKeyword forKeyword unknownKeyword
-		| parameterizationKeyword ( simpleKeyword | forcedKeyword)
+		| parameterizationKeyword (simpleKeyword | forcedKeyword)
 		| querytraceonKeyword integer_value
 		| recompileKeyword
 		| robustKeyword planKeyword
-		| useKeyword hintKeyword leftparenthesisKeyword singlequotationKeyword hint_name singlequotationKeyword (
+		| useKeyword hintKeyword leftparenthesisKeyword singlequotationKeyword hint_name
+			singlequotationKeyword (
 			commaKeyword singlequotationKeyword hint_name singlequotationKeyword
 		)* rightparenthesisKeyword
 		| useKeyword planKeyword nKeyword singlequotationKeyword xml_plan singlequotationKeyword
 		| tableKeyword hintKeyword leftparenthesisKeyword exposed_object_name (
 			commaKeyword table_hint (commaKeyword? table_hint)*
 		)? rightparenthesisKeyword
-		| forKeyword timestampKeyword asKeyword ofKeyword singlequotationKeyword point_in_time singlequotationKeyword
+		| forKeyword timestampKeyword asKeyword ofKeyword singlequotationKeyword point_in_time
+			singlequotationKeyword
 	);
 table_hint:
 	(
@@ -1223,7 +1318,9 @@ table_hint:
 				| index_value
 			)
 		)?
-		| indexKeyword leftparenthesisKeyword index_value (commaKeyword index_value)* rightparenthesisKeyword
+		| indexKeyword leftparenthesisKeyword index_value (
+			commaKeyword index_value
+		)* rightparenthesisKeyword
 		| indexKeyword equalKeyword (
 			leftparenthesisKeyword index_value rightparenthesisKeyword
 			| index_value
@@ -1246,7 +1343,7 @@ table_hint:
 		| rowlockKeyword
 		| serializableKeyword
 		| snapshotKeyword
-		| SPATIAL_WINDOW_MAX_CELLS equalKeyword integer_value
+		| spatial_window_max_cellskeyword equalKeyword integer_value
 		| tablockKeyword
 		| tablockxKeyword
 		| updlockKeyword
@@ -1277,12 +1374,9 @@ table_hint_limited:
 	);
 
 openxml_clause:
-	openxmlKeyword leftparenthesisKeyword idoc int (in)? commaKeyword rowpattern nvarchar (
-		in
-	)? commaKeyword (flags byte ( in)?)? rightparenthesisKeyword (
-		withKeyword leftparenthesisKeyword schemaDeclaration
-		| table_name rightparenthesisKeyword
-	)?;
+	openxmlKeyword leftparenthesisKeyword idoc commaKeyword rowpattern commaKeyword (
+		flags
+	)? rightparenthesisKeyword;
 
 join_hint:
 	(
@@ -1293,7 +1387,7 @@ join_hint:
 		| reduceKeyword
 		| replicateKeyword
 		| redistributeKeyword (
-			leftparenthesisKeyword columns count rightparenthesisKeyword
+			leftparenthesisKeyword columns_count rightparenthesisKeyword
 		)?
 	);
 
@@ -1303,7 +1397,9 @@ with_common_table_expression:
 with: withKeyword;
 
 update: (with_common_table_expression)? updateKeyword (
-		topKeyword leftparenthesisKeyword expression rightparenthesisKeyword (percentKeyword)?
+		topKeyword leftparenthesisKeyword expression rightparenthesisKeyword (
+			percentKeyword
+		)?
 	)? (
 		(
 			(table_alias | object | rowset_function_limited) (
@@ -1331,7 +1427,10 @@ update: (with_common_table_expression)? updateKeyword (
 			)
 		)
 		| column_name (
-			dotKeyword writeKeyword leftparenthesisKeyword (expression | nullKeyword) commaKeyword offset commaKeyword length rightparenthesisKeyword
+			dotKeyword writeKeyword leftparenthesisKeyword (
+				expression
+				| nullKeyword
+			) commaKeyword offset commaKeyword length rightparenthesisKeyword
 		)
 		| atsymbolKeyword variable equalKeyword expression
 		| atsymbolKeyword variable equalKeyword column equalKeyword expression
@@ -1367,7 +1466,11 @@ update: (with_common_table_expression)? updateKeyword (
 		) expression
 	) (
 		commaKeyword (
-			column_name equalKeyword (expression | defaultKeyword | nullKeyword)
+			column_name equalKeyword (
+				expression
+				| defaultKeyword
+				| nullKeyword
+			)
 			| (
 				udt_column_name dotKeyword (
 					(
@@ -1380,8 +1483,10 @@ update: (with_common_table_expression)? updateKeyword (
 				)
 			)
 			| column_name (
-				dotKeyword writeKeyword leftparenthesisKeyword (expression | nullKeyword) commaKeyword offset commaKeyword length
-					rightparenthesisKeyword
+				dotKeyword writeKeyword leftparenthesisKeyword (
+					expression
+					| nullKeyword
+				) commaKeyword offset commaKeyword length rightparenthesisKeyword
 			)
 			| atsymbolKeyword variable equalKeyword expression
 			| atsymbolKeyword variable equalKeyword column equalKeyword expression
@@ -1416,32 +1521,38 @@ update: (with_common_table_expression)? updateKeyword (
 				| orequalKeyword
 			) expression
 		)
-	)* (oUTPUT_CLAUSE)? (fromKeyword ( table) (commaKeyword table)*)? (
+	)* (oUTPUT_CLAUSE)? (
+		fromKeyword ( table) (commaKeyword table)*
+	)? (
 		whereKeyword (
 			search_condition
 			| (
 				(
 					currentKeyword ofKeyword (
-						( ( globalKeyword)? cursor_name)
+						(( globalKeyword)? cursor_name)
 						| cursor_variable_name
 					)
 				)?
 			)
 		)
 	)? (
-		optionKeyword leftparenthesisKeyword query_hint (commaKeyword query_hint)* rightparenthesisKeyword
+		optionKeyword leftparenthesisKeyword query_hint (
+			commaKeyword query_hint
+		)* rightparenthesisKeyword
 	)? (semicolonKeyword)?;
 object:
 	database_name dotKeyword schema_name dotKeyword table_or_view_name	# ThreePartTableName
-	| schema_name dotKeyword table_or_view_name					# TwoPartTableName
-	| table_or_view_name									# OnePartTableName;
+	| schema_name dotKeyword table_or_view_name							# TwoPartTableName
+	| table_or_view_name												# OnePartTableName;
 
 oUTPUT_CLAUSE:
 	(
 		outputKeyword dml_select_list intoKeyword (
 			atsymbolKeyword table_variable
 			| output_table
-		) (leftparenthesisKeyword column_list rightparenthesisKeyword)?
+		) (
+			leftparenthesisKeyword column_list rightparenthesisKeyword
+		)?
 		| outputKeyword dml_select_list
 	);
 dml_select_list:
@@ -1460,7 +1571,9 @@ column_name1:
 	| dollarKeyword actionKeyword;
 
 delete: (with_common_table_expression)? deleteKeyword (
-		topKeyword leftparenthesisKeyword expression rightparenthesisKeyword (percentKeyword)?
+		topKeyword leftparenthesisKeyword expression rightparenthesisKeyword (
+			percentKeyword
+		)?
 	)? (fromKeyword)? (
 		(
 			table_alias
@@ -1478,14 +1591,16 @@ delete: (with_common_table_expression)? deleteKeyword (
 			| (
 				(
 					currentKeyword ofKeyword (
-						( ( globalKeyword)? cursor_name)
+						(( globalKeyword)? cursor_name)
 						| cursor_variable_name
 					)
 				)?
 			)
 		)
 	)? (
-		optionKeyword leftparenthesisKeyword query_hint (commaKeyword query_hint)* rightparenthesisKeyword
+		optionKeyword leftparenthesisKeyword query_hint (
+			commaKeyword query_hint
+		)* rightparenthesisKeyword
 	)? (semicolonKeyword)?;
 
 insert: (with_common_table_expression)? insertKeyword (
@@ -1501,19 +1616,31 @@ insert: (with_common_table_expression)? insertKeyword (
 			)?
 			| atsymbolKeyword variable
 		) (
-			(leftparenthesisKeyword column_list rightparenthesisKeyword)? (
-				oUTPUT_CLAUSE
-			)? (
+			(
+				leftparenthesisKeyword column_list rightparenthesisKeyword
+			)? (oUTPUT_CLAUSE)? (
 				valuesKeyword leftparenthesisKeyword (
 					defaultKeyword
 					| nullKeyword
 					| expression
-				) (commaKeyword ( defaultKeyword | nullKeyword | expression))* rightparenthesisKeyword (
+				) (
+					commaKeyword (
+						defaultKeyword
+						| nullKeyword
+						| expression
+					)
+				)* rightparenthesisKeyword (
 					commaKeyword leftparenthesisKeyword (
 						defaultKeyword
 						| nullKeyword
 						| expression
-					) (commaKeyword ( defaultKeyword | nullKeyword | expression))* rightparenthesisKeyword
+					) (
+						commaKeyword (
+							defaultKeyword
+							| nullKeyword
+							| expression
+						)
+					)* rightparenthesisKeyword
 				)*
 				| derived_table
 				| execute_statement
@@ -1537,43 +1664,102 @@ dml_table_source:
 		| (merge | dml_statement_with_output_clause)
 	) (
 		(asKeyword)? table_alias (
-			leftparenthesisKeyword column_alias (commaKeyword column_alias)* rightparenthesisKeyword
+			leftparenthesisKeyword column_alias (
+				commaKeyword column_alias
+			)* rightparenthesisKeyword
 		)?
 	)? (whereKeyword search_condition)? order_byCLASUE? (
-		optionKeyword leftparenthesisKeyword query_hint (commaKeyword query_hint)* rightparenthesisKeyword
+		optionKeyword leftparenthesisKeyword query_hint (
+			commaKeyword query_hint
+		)* rightparenthesisKeyword
 	)?;
 
 merge: (with_common_table_expression)? mergeKeyword (
-		topKeyword leftparenthesisKeyword expression rightparenthesisKeyword (percentKeyword)?
+		topKeyword leftparenthesisKeyword expression rightparenthesisKeyword (
+			percentKeyword
+		)?
 	)? (intoKeyword)? target_table (
 		withKeyword leftparenthesisKeyword merge_hint rightparenthesisKeyword
 	)? (( asKeyword)? table_alias)? usingKeyword table_source (
 		( asKeyword)? table_alias
 	)? onKeyword merge_search_condition (
-		whenKeyword matchedKeyword (andKeyword clause_search_condition)? thenKeyword merge_matched
-	)* (
-		whenKeyword notKeyword matchedKeyword (byKeyword targetKeyword)? (
+		whenKeyword matchedKeyword (
 			andKeyword clause_search_condition
-		)? thenKeyword merge_not_matched
+		)? thenKeyword merge_matched
+	)* (
+		whenKeyword notKeyword matchedKeyword (
+			byKeyword targetKeyword
+		)? (andKeyword clause_search_condition)? thenKeyword merge_not_matched
 	)? (
-		whenKeyword notKeyword matchedKeyword byKeyword sourceKeyword (andKeyword clause_search_condition)? thenKeyword merge_matched
+		whenKeyword notKeyword matchedKeyword byKeyword sourceKeyword (
+			andKeyword clause_search_condition
+		)? thenKeyword merge_matched
 	)* (oUTPUT_CLAUSE)? (
-		optionKeyword leftparenthesisKeyword query_hint (commaKeyword query_hint)* rightparenthesisKeyword
+		optionKeyword leftparenthesisKeyword query_hint (
+			commaKeyword query_hint
+		)* rightparenthesisKeyword
 	)?;
+
+if:
+	ifKeyword boolean_expression (
+		sql_statement
+		| statement_block
+	) (elsekeyword ( sql_statement | statement_block))?;
+
+while:
+	whilekeyword boolean_expression (
+		sql_statement
+		| statement_block
+		| breakkeyword
+		| continuekeyword
+	);
+
+statement_block:
+	beginkeyword semicolonKeyword? (
+		sql_statement
+		| statement_block
+	) endKeyword semicolonKeyword?;
+
+sql_statement: (
+		insert
+		| update
+		| sELECTstatement
+		| create
+		| declare_cursor
+		| open_cursor
+		| fetch_cursor
+		| close_cursor
+		| dellocate_cursor
+		| delete
+		| drop
+		| alter
+		| truncate
+		| use
+		| go
+	)*;
+
+boolean_expression: search_condition;
 
 target_table:
 	(
-		(database_name dotKeyword schema_name dotKeyword | schema_name dotKeyword)? (
-			( asKeyword)? table_or_view_name
+		(
+			database_name dotKeyword schema_name dotKeyword
+			| schema_name dotKeyword
+		)? (asKeyword)? table_or_view_name
+		| atsymbolKeyword variable (( asKeyword)? target_table)?
+		| common_table_expression_name (
+			( asKeyword)? target_table
 		)?
-		| atsymbolKeyword variable ( ( asKeyword)? target_table)?
-		| common_table_expression_name (( asKeyword)? target_table)?
 	);
 
 merge_hint:
 	(
 		(
-			(table_hint_limited (commaKeyword table_hint_limited)*)? (
+			(
+				table_hint_limited (
+					commaKeyword table_hint_limited
+				)*
+			)? (
 				(commaKeyword)? (
 					indexKeyword leftparenthesisKeyword index_value (
 						commaKeyword index_value
@@ -1586,11 +1772,16 @@ merge_hint:
 
 merge_search_condition: search_condition;
 
-merge_matched: ( updateKeyword setKeyword set_clause | deleteKeyword);
+merge_matched: (
+		updateKeyword setKeyword set_clause
+		| deleteKeyword
+	);
 
 merge_not_matched:
 	(
-		insertKeyword (leftparenthesisKeyword column_list rightparenthesisKeyword)? (
+		insertKeyword (
+			leftparenthesisKeyword column_list rightparenthesisKeyword
+		)? (
 			valuesKeyword leftparenthesisKeyword values_list rightparenthesisKeyword
 			| defaultKeyword valuesKeyword
 		)
@@ -1599,24 +1790,26 @@ merge_not_matched:
 clause_search_condition: search_condition;
 
 drop:
-	dropKeyword tableKeyword (ifKeyword existsKeyword)? (
-		database_name dotKeyword schema_name dotKeyword table_name
-		| schema_name dotKeyword table_name
-		| table_name
-	) (
-		commaKeyword (
-			database_name dotKeyword schema_name dotKeyword table_name
-			| schema_name dotKeyword table_name
-			| table_name
-		)
+	dropKeyword tableKeyword (ifKeyword existsKeyword)? object (
+		commaKeyword object
 	)* (semicolonKeyword)?;
 
 values_list:
-	leftparenthesisKeyword (defaultKeyword | nullKeyword | expression) (
-		commaKeyword ( defaultKeyword | nullKeyword | expression)
-	)* rightparenthesisKeyword (
-		commaKeyword leftparenthesisKeyword (defaultKeyword | nullKeyword | expression) (
-			commaKeyword ( defaultKeyword | nullKeyword | expression)
+	leftparenthesisKeyword (
+		defaultKeyword
+		| nullKeyword
+		| expression
+	) (commaKeyword ( defaultKeyword | nullKeyword | expression))* rightparenthesisKeyword (
+		commaKeyword leftparenthesisKeyword (
+			defaultKeyword
+			| nullKeyword
+			| expression
+		) (
+			commaKeyword (
+				defaultKeyword
+				| nullKeyword
+				| expression
+			)
 		)* rightparenthesisKeyword
 	)*;
 set_clause:
@@ -1638,7 +1831,10 @@ set_clause:
 			)
 		)
 		| column_name (
-			dotKeyword writeKeyword leftparenthesisKeyword (expression | nullKeyword) commaKeyword offset commaKeyword length rightparenthesisKeyword
+			dotKeyword writeKeyword leftparenthesisKeyword (
+				expression
+				| nullKeyword
+			) commaKeyword offset commaKeyword length rightparenthesisKeyword
 		)
 		| atsymbolKeyword variable equalKeyword expression
 		| atsymbolKeyword variable equalKeyword column equalKeyword expression
@@ -1674,7 +1870,11 @@ set_clause:
 		) expression
 	) (
 		commaKeyword (
-			column_name equalKeyword (expression | defaultKeyword | nullKeyword)
+			column_name equalKeyword (
+				expression
+				| defaultKeyword
+				| nullKeyword
+			)
 			| (
 				udt_column_name dotKeyword (
 					(
@@ -1687,8 +1887,10 @@ set_clause:
 				)
 			)
 			| column_name (
-				dotKeyword writeKeyword leftparenthesisKeyword (expression | nullKeyword) commaKeyword offset commaKeyword length
-					rightparenthesisKeyword
+				dotKeyword writeKeyword leftparenthesisKeyword (
+					expression
+					| nullKeyword
+				) commaKeyword offset commaKeyword length rightparenthesisKeyword
 			)
 			| atsymbolKeyword variable equalKeyword expression
 			| atsymbolKeyword variable equalKeyword column equalKeyword expression
@@ -1734,9 +1936,10 @@ alter:
 					| max
 					| xml_schema_collection
 				) rightparenthesisKeyword
-			)? (collateKeyword collation_name)? (nullKeyword | notKeyword nullKeyword)? (
-				sparseKeyword
-			)?
+			)? (collateKeyword collation_name)? (
+				nullKeyword
+				| notKeyword nullKeyword
+			)? (sparseKeyword)?
 			| (addKeyword | dropKeyword) (
 				rowguidcolKeyword
 				| persistedKeyword
@@ -1745,7 +1948,7 @@ alter:
 				| HIDDEN1
 			) (nullKeyword | notKeyword nullKeyword)?
 			| (addKeyword | dropKeyword) maskedKeyword (
-				withKeyword leftparenthesisKeyword functionKeyword equalKeyword singlequotationKeyword mask_function singlequotationKeyword
+				withKeyword leftparenthesisKeyword functionKeyword equalKeyword mask_function
 					rightparenthesisKeyword
 			)?
 		) (
@@ -1766,34 +1969,6 @@ alter:
 				| column_set_definition
 			)
 		)*
-		| (
-			system_start_time_column_name datetime2 generatedKeyword alwaysKeyword asKeyword rowKeyword startKeyword (
-				HIDDEN1
-			)? (notKeyword nullKeyword)? (constraintKeyword constraint_name)? defaultKeyword constant_expression (
-				withKeyword valuesKeyword
-			)? commaKeyword system_end_time_column_name datetime2 generatedKeyword alwaysKeyword asKeyword rowKeyword endKeyword (
-				HIDDEN1
-			)? (notKeyword nullKeyword)? (constraintKeyword constraint_name)? defaultKeyword constant_expression (
-				withKeyword valuesKeyword
-			)? commaKeyword start_transaction_id_column_name bigint generatedKeyword alwaysKeyword asKeyword TRANSACTION_ID
-				startKeyword (HIDDEN1)? notKeyword nullKeyword (
-				constraintKeyword constraint_name
-			)? defaultKeyword constant_expression (withKeyword valuesKeyword)? commaKeyword end_transaction_id_column_name
-				bigint generatedKeyword alwaysKeyword asKeyword TRANSACTION_ID endKeyword (
-				HIDDEN1
-			)? nullKeyword (constraintKeyword constraint_name)? defaultKeyword constant_expression (
-				withKeyword valuesKeyword
-			)? commaKeyword start_sequence_number_column_name bigint generatedKeyword alwaysKeyword asKeyword SEQUENCE_NUMBER
-				startKeyword (HIDDEN1)? notKeyword nullKeyword (
-				constraintKeyword constraint_name
-			)? defaultKeyword constant_expression (withKeyword valuesKeyword)? commaKeyword end_sequence_number_column_name
-				bigint generatedKeyword alwaysKeyword asKeyword SEQUENCE_NUMBER endKeyword (
-				HIDDEN1
-			)? nullKeyword (constraintKeyword constraint_name)? defaultKeyword constant_expression (
-				withKeyword valuesKeyword
-			)?
-		)? periodKeyword forKeyword SYSTEM_TIME leftparenthesisKeyword system_start_time_column_name commaKeyword
-			system_end_time_column_name rightparenthesisKeyword
 		| dropKeyword (
 			(
 				(constraintKeyword)? (ifKeyword existsKeyword)? (
@@ -1811,7 +1986,9 @@ alter:
 						)?
 					)
 				)*
-				| columnKeyword (ifKeyword existsKeyword)? (column_name) (
+				| columnKeyword (ifKeyword existsKeyword)? (
+					column_name
+				) (
 					commaKeyword (
 						constraint_name (
 							withKeyword leftparenthesisKeyword drop_clustered_constraint_option (
@@ -1821,18 +1998,23 @@ alter:
 					) (
 						commaKeyword (
 							constraint_name (
-								withKeyword leftparenthesisKeyword drop_clustered_constraint_option (
+								withKeyword leftparenthesisKeyword drop_clustered_constraint_option
+									(
 									commaKeyword drop_clustered_constraint_option
 								)* rightparenthesisKeyword
 							)?
 						)
 					)*
-					| columnKeyword ( ifKeyword existsKeyword)? ( column_name)
+					| columnKeyword (ifKeyword existsKeyword)? (
+						column_name
+					)
 				)*
 				| periodKeyword forKeyword SYSTEM_TIME
 			) (
 				commaKeyword (
-					(constraintKeyword)? (ifKeyword existsKeyword)? (
+					(constraintKeyword)? (
+						ifKeyword existsKeyword
+					)? (
 						constraint_name (
 							withKeyword leftparenthesisKeyword drop_clustered_constraint_option (
 								commaKeyword drop_clustered_constraint_option
@@ -1841,68 +2023,88 @@ alter:
 					) (
 						commaKeyword (
 							constraint_name (
-								withKeyword leftparenthesisKeyword drop_clustered_constraint_option (
+								withKeyword leftparenthesisKeyword drop_clustered_constraint_option
+									(
 									commaKeyword drop_clustered_constraint_option
 								)* rightparenthesisKeyword
 							)?
 						)
 					)*
-					| columnKeyword (ifKeyword existsKeyword)? (column_name) (
+					| columnKeyword (ifKeyword existsKeyword)? (
+						column_name
+					) (
 						commaKeyword (
 							constraint_name (
-								withKeyword leftparenthesisKeyword drop_clustered_constraint_option (
+								withKeyword leftparenthesisKeyword drop_clustered_constraint_option
+									(
 									commaKeyword drop_clustered_constraint_option
 								)* rightparenthesisKeyword
 							)?
 						) (
 							commaKeyword (
 								constraint_name (
-									withKeyword leftparenthesisKeyword drop_clustered_constraint_option (
+									withKeyword leftparenthesisKeyword
+										drop_clustered_constraint_option (
 										commaKeyword drop_clustered_constraint_option
 									)* rightparenthesisKeyword
 								)?
 							)
 						)*
-						| columnKeyword ( ifKeyword existsKeyword)? ( column_name)
+						| columnKeyword (ifKeyword existsKeyword)? (
+							column_name
+						)
 					)*
 					| periodKeyword forKeyword SYSTEM_TIME
 				)
 			)*
 		)?
-		| (withKeyword ( checkKeyword | nocheckKeyword))? (checkKeyword | nocheckKeyword) constraintKeyword (
+		| (withKeyword ( checkKeyword | nocheckKeyword))? (
+			checkKeyword
+			| nocheckKeyword
+		) constraintKeyword (
 			allKeyword
-			| constraint_name (commaKeyword (allKeyword | constraint_name))*
+			| constraint_name (
+				commaKeyword (allKeyword | constraint_name)
+			)*
 		)
 		| (enableKeyword | disableKeyword) triggerKeyword (
 			allKeyword
-			| trigger_name (commaKeyword (allKeyword | trigger_name))*
+			| trigger_name (
+				commaKeyword (allKeyword | trigger_name)
+			)*
 		)
-		| (enableKeyword | disableKeyword) CHANGE_TRACKING (
-			withKeyword leftparenthesisKeyword TRACK_COLUMNS_UPDATED equalKeyword (
+		| (enableKeyword | disableKeyword) change_trackingkeyword (
+			withKeyword leftparenthesisKeyword track_columns_updatedkeyword equalKeyword (
 				onKeyword
 				| offKeyword
 			) rightparenthesisKeyword
 		)?
-		| switchKeyword (partitionKeyword source_partition_number_expression)? toKeyword target_table (
+		| switchKeyword (
+			partitionKeyword source_partition_number_expression
+		)? toKeyword target_table (
 			partitionKeyword target_partition_number_expression
 		)? (
 			withKeyword leftparenthesisKeyword low_priority_lock_wait rightparenthesisKeyword
 		)?
 		| setKeyword leftparenthesisKeyword (
-			FILESTREAM_ON equalKeyword (
+			filestream_onkeyword equalKeyword (
 				partition_scheme_name
 				| filegroup
 				| doublequotationKeyword default doublequotationKeyword
 				| doublequotationKeyword nullKeyword doublequotationKeyword
 			)
 		)?
-		| SYSTEM_VERSIONING equalKeyword (
+		| system_versioningkeyword equalKeyword (
 			offKeyword
 			| onKeyword (
-				leftparenthesisKeyword HISTORY_TABLE equalKeyword schema_name dotKeyword history_table_name (
-					commaKeyword DATA_CONSISTENCY_CHECK equalKeyword (onKeyword | offKeyword)
+				leftparenthesisKeyword history_tablekeyword equalKeyword schema_name dotKeyword
+					history_table_name (
+					commaKeyword data_consistency_checkkeyword equalKeyword (
+						onKeyword
+						| offKeyword
+					)
 				)? (
-					commaKeyword HISTORY_RETENTION_PERIOD equalKeyword (
+					commaKeyword history_retention_periodkeyword equalKeyword (
 						infiniteKeyword
 						| number (
 							dayKeyword
@@ -1918,11 +2120,13 @@ alter:
 				)? rightparenthesisKeyword
 			)?
 		)
-		| DATA_DELETION equalKeyword (
+		| data_deletionkeyword equalKeyword (
 			offKeyword
 			| onKeyword (
-				leftparenthesisKeyword (FILTER_COLUMN equalKeyword column_name)? (
-					commaKeyword RETENTION_PERIOD equalKeyword (
+				leftparenthesisKeyword (
+					filter_columnkeyword equalKeyword column_name
+				)? (
+					commaKeyword retention_periodkeyword equalKeyword (
 						infiniteKeyword
 						| number (
 							dayKeyword
@@ -1954,14 +2158,13 @@ alter:
 		)
 		| table_option
 		| filetable_option
-		| stretch_configuration
 	) (semicolonKeyword)?;
 column_set_definition:
-	column_set_name xmlKeyword COLUMN_SET forKeyword ALL_SPARSE_COLUMNS;
+	column_set_name xmlKeyword column_setkeyword forKeyword ALL_SPARSE_COLUMNS;
 drop_clustered_constraint_option:
 	(
 		maxdopKeyword equalKeyword max_degree_of_parallelism
-		| onlineKeyword equalKeyword ( onKeyword | offKeyword)
+		| onlineKeyword equalKeyword (onKeyword | offKeyword)
 		| moveKeyword toKeyword (
 			partition_scheme_name leftparenthesisKeyword column_name rightparenthesisKeyword
 			| filegroup
@@ -1970,43 +2173,28 @@ drop_clustered_constraint_option:
 	);
 table_option:
 	(
-		setKeyword leftparenthesisKeyword LOCK_ESCALATION equalKeyword (
+		setKeyword leftparenthesisKeyword lock_escalationkeyword equalKeyword (
 			autoKeyword
 			| tableKeyword
 			| disableKeyword
 		) rightparenthesisKeyword
 	);
+max: numbersKeyword;
 filetable_option:
 	(
 		(( enableKeyword | disableKeyword) FILETABLE_NAMESPACE)? (
-			setKeyword leftparenthesisKeyword FILETABLE_DIRECTORY equalKeyword directory_name rightparenthesisKeyword
-		)?
-	);
-stretch_configuration:
-	(
-		setKeyword leftparenthesisKeyword REMOTE_DATA_ARCHIVE (
-			equalKeyword onKeyword leftparenthesisKeyword table_stretch_options rightparenthesisKeyword
-			| equalKeyword OFF_WITHOUT_DATA_RECOVERY leftparenthesisKeyword MIGRATION_STATE equalKeyword pausedKeyword
+			setKeyword leftparenthesisKeyword filetable_directorykeyword equalKeyword directory_name
 				rightparenthesisKeyword
-			| leftparenthesisKeyword table_stretch_options (
-				commaKeyword table_stretch_options
-			)* rightparenthesisKeyword
-		) rightparenthesisKeyword
-	);
-table_stretch_options:
-	(
-		(
-			FILTER_PREDICATE equalKeyword (
-				null
-				| table_predicate_function
-			) commaKeyword
-		)? MIGRATION_STATE equalKeyword (outboundKeyword | inboundKeyword | pausedKeyword)
+		)?
 	);
 single_partition_rebuild__option:
 	(
-		SORT_IN_TEMPDB equalKeyword ( onKeyword | offKeyword)
+		sort_in_tempdbkeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		)
 		| maxdopKeyword equalKeyword max_degree_of_parallelism
-		| DATA_COMPRESSION equalKeyword (
+		| data_compressionkeyword equalKeyword (
 			noneKeyword
 			| rowKeyword
 			| pageKeyword
@@ -2022,16 +2210,21 @@ single_partition_rebuild__option:
 	);
 low_priority_lock_wait:
 	(
-		WAIT_AT_LOW_PRIORITY leftparenthesisKeyword MAX_DURATION equalKeyword time (
+		wait_at_low_prioritykeyword leftparenthesisKeyword max_durationkeyword equalKeyword time (
 			minutesKeyword
-		)? commaKeyword ABORT_AFTER_WAIT equalKeyword (noneKeyword | selfKeyword | blockersKeyword) rightparenthesisKeyword
+		)? commaKeyword abort_after_waitkeyword equalKeyword (
+			noneKeyword
+			| selfKeyword
+			| blockersKeyword
+		) rightparenthesisKeyword
 	);
 
 column_definition:
-	column_name data_type (filestreamKeyword)? (collateKeyword collation_name)? (
-		sparseKeyword
-	)? (
-		maskedKeyword withKeyword leftparenthesisKeyword functionKeyword equalKeyword 'mask_function' rightparenthesisKeyword
+	column_name data_type (filestreamKeyword)? (
+		collateKeyword collation_name
+	)? (sparseKeyword)? (
+		maskedKeyword withKeyword leftparenthesisKeyword functionKeyword equalKeyword mask_function
+			rightparenthesisKeyword
 	)? (
 		(constraintKeyword constraint_name)? defaultKeyword constant_expression
 	)? (
@@ -2044,11 +2237,17 @@ column_definition:
 			| TRANSACTION_ID
 			| SEQUENCE_NUMBER
 		) (startKeyword | endKeyword) (HIDDEN1)?
-	)? (( constraintKeyword constraint_name)? (nullKeyword | notKeyword nullKeyword))? (
-		rowguidcolKeyword
 	)? (
-		encryptedKeyword withKeyword leftparenthesisKeyword COLUMN_ENCRYPTION_KEY equalKeyword key_name commaKeyword ENCRYPTION_TYPE
-			equalKeyword (deterministicKeyword | randomizedKeyword) commaKeyword algorithmKeyword equalKeyword singlequotationKeyword
+		(constraintKeyword constraint_name)? (
+			nullKeyword
+			| notKeyword nullKeyword
+		)
+	)? (rowguidcolKeyword)? (
+		encryptedKeyword withKeyword leftparenthesisKeyword column_encryption_keykeyword
+			equalKeyword key_name commaKeyword encryption_typekeyword equalKeyword (
+			deterministicKeyword
+			| randomizedKeyword
+		) commaKeyword algorithmKeyword equalKeyword singlequotationKeyword
 			AEAD_AES_256_CBC_HMAC_SHA_256 singlequotationKeyword rightparenthesisKeyword
 	)? (column_constraint (commaKeyword column_constraint)*)? (
 		column_index
@@ -2058,16 +2257,18 @@ datatype:
 		leftparenthesisKeyword (
 			precision ( commaKeyword scale)?
 			| max
-			| ( ( contentKeyword | documentKeyword))? xml_schema_collection
+			| (( contentKeyword | documentKeyword))? xml_schema_collection
 		) rightparenthesisKeyword
 	)?;
 column_constraint:
 	(constraintKeyword constraint_name)? (
-		(primaryKeyword keyKeyword (notKeyword nullKeyword)? | uniqueKeyword) (
-			clusteredKeyword
-			| nonclusteredKeyword
-		)? (
-			leftparenthesisKeyword column_name1 (commaKeyword column_name1)* rightparenthesisKeyword
+		(
+			primaryKeyword keyKeyword (notKeyword nullKeyword)?
+			| uniqueKeyword
+		) (clusteredKeyword | nonclusteredKeyword)? (
+			leftparenthesisKeyword column_name1 (
+				commaKeyword column_name1
+			)* rightparenthesisKeyword
 		)? (
 			withKeyword fillfactorKeyword equalKeyword fillfactor
 			| withKeyword leftparenthesisKeyword index_option (
@@ -2075,12 +2276,15 @@ column_constraint:
 			)* rightparenthesisKeyword
 		)? (
 			onKeyword (
-				partition_scheme_name leftparenthesisKeyword partition_column_name rightparenthesisKeyword
+				partition_scheme_name leftparenthesisKeyword partition_column_name
+					rightparenthesisKeyword
 				| filegroup
 				| doublequotationKeyword default doublequotationKeyword
 			)
 		)?
-		| (foreignKeyword keyKeyword)? referencesKeyword (schema_name dotKeyword)? referenced_table_name (
+		| (foreignKeyword keyKeyword)? referencesKeyword (
+			schema_name dotKeyword
+		)? referenced_table_name (
 			leftparenthesisKeyword ref_column rightparenthesisKeyword
 		)? (
 			onKeyword deleteKeyword (
@@ -2097,20 +2301,39 @@ column_constraint:
 				| setKeyword defaultKeyword
 			)
 		)? (notKeyword forKeyword replicationKeyword)?
-		| checkKeyword (notKeyword forKeyword replicationKeyword)? leftparenthesisKeyword logical_expression rightparenthesisKeyword
+		| checkKeyword (notKeyword forKeyword replicationKeyword)? leftparenthesisKeyword
+			logical_expression rightparenthesisKeyword
 	);
 
 index_option: (
-		PAD_INDEX equalKeyword ( onKeyword | offKeyword)
+		pad_indexkeyword equalKeyword (onKeyword | offKeyword)
 		| fillfactorKeyword equalKeyword fillfactor
-		| IGNORE_DUP_KEY equalKeyword ( onKeyword | offKeyword)
-		| STATISTICS_NORECOMPUTE equalKeyword ( onKeyword | offKeyword)
-		| ALLOW_ROW_LOCKS equalKeyword ( onKeyword | offKeyword)
-		| ALLOW_PAGE_LOCKS equalKeyword ( onKeyword | offKeyword)
-		| OPTIMIZE_FOR_SEQUENTIAL_KEY equalKeyword ( onKeyword | offKeyword)
-		| SORT_IN_TEMPDB equalKeyword ( onKeyword | offKeyword)
+		| ignore_dup_keykeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		)
+		| statistics_norecomputekeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		)
+		| allow_row_lockskeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		)
+		| allow_page_lockskeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		)
+		| optimize_for_sequential_keykeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		)
+		| sort_in_tempdbkeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		)
 		| maxdopKeyword equalKeyword max_degree_of_parallelism
-		| DATA_COMPRESSION equalKeyword (
+		| data_compressionkeyword equalKeyword (
 			noneKeyword
 			| rowKeyword
 			| pageKeyword
@@ -2120,17 +2343,30 @@ index_option: (
 			onKeyword partitionsKeyword leftparenthesisKeyword (
 				partition_number_expression
 				| range
-			) (commaKeyword ( partition_number_expression | range))* rightparenthesisKeyword
+			) (
+				commaKeyword (
+					partition_number_expression
+					| range
+				)
+			)* rightparenthesisKeyword
 		)?
-		| XML_COMPRESSION equalKeyword (onKeyword | offKeyword) (
+		| xml_compressionkeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		) (
 			onKeyword partitionsKeyword leftparenthesisKeyword (
 				partition_number_expression
 				| range
-			) (commaKeyword ( partition_number_expression | range))* rightparenthesisKeyword
+			) (
+				commaKeyword (
+					partition_number_expression
+					| range
+				)
+			)* rightparenthesisKeyword
 		)?
-		| onlineKeyword equalKeyword ( onKeyword | offKeyword)
-		| resumableKeyword equalKeyword ( onKeyword | offKeyword)
-		| MAX_DURATION equalKeyword time ( minutesKeyword)?
+		| onlineKeyword equalKeyword (onKeyword | offKeyword)
+		| resumableKeyword equalKeyword (onKeyword | offKeyword)
+		| max_durationkeyword equalKeyword time (minutesKeyword)?
 	);
 range:
 	partition_number_expression toKeyword partition_number_expression;
@@ -2139,34 +2375,48 @@ computed_column_definition:
 	column_name asKeyword computed_column_expression (
 		persistedKeyword ( notKeyword nullKeyword)?
 	)? (
-		(constraintKeyword constraint_name)? (primaryKeyword keyKeyword | uniqueKeyword) (
-			clusteredKeyword
-			| nonclusteredKeyword
-		)? (withKeyword fillfactorKeyword equalKeyword fillfactor)? (
+		(constraintKeyword constraint_name)? (
+			primaryKeyword keyKeyword
+			| uniqueKeyword
+		) (clusteredKeyword | nonclusteredKeyword)? (
+			withKeyword fillfactorKeyword equalKeyword fillfactor
+		)? (
 			withKeyword leftparenthesisKeyword index_option (
 				commaKeyword index_option
 			)* rightparenthesisKeyword
 		)? (
 			onKeyword (
-				partition_scheme_name leftparenthesisKeyword partition_column_name rightparenthesisKeyword
+				partition_scheme_name leftparenthesisKeyword partition_column_name
+					rightparenthesisKeyword
 				| filegroup
 				| doublequotationKeyword default doublequotationKeyword
 			)
 		)?
 		| (foreignKeyword keyKeyword)? referencesKeyword ref_table (
 			leftparenthesisKeyword ref_column rightparenthesisKeyword
-		)? (onKeyword deleteKeyword ( noKeyword actionKeyword | cascadeKeyword))? (
-			onKeyword updateKeyword ( noKeyword actionKeyword)
-		)? (notKeyword forKeyword replicationKeyword)?
-		| checkKeyword (notKeyword forKeyword replicationKeyword)? leftparenthesisKeyword logical_expression rightparenthesisKeyword
+		)? (
+			onKeyword deleteKeyword (
+				noKeyword actionKeyword
+				| cascadeKeyword
+			)
+		)? (onKeyword updateKeyword ( noKeyword actionKeyword))? (
+			notKeyword forKeyword replicationKeyword
+		)?
+		| checkKeyword (notKeyword forKeyword replicationKeyword)? leftparenthesisKeyword
+			logical_expression rightparenthesisKeyword
 	)?;
 
 single_partition_rebuild_option:
-	(DATA_COMPRESSION equalKeyword ( columnstoreKeyword | COLUMNSTORE_ARCHIVE));
+	(
+		data_compressionkeyword equalKeyword (
+			columnstoreKeyword
+			| COLUMNSTORE_ARCHIVE
+		)
+	);
 
 rebuild_option:
 	(
-		DATA_COMPRESSION equalKeyword (
+		data_compressionkeyword equalKeyword (
 			noneKeyword
 			| rowKeyword
 			| pageKeyword
@@ -2175,66 +2425,84 @@ rebuild_option:
 		) (
 			onKeyword partitionsKeyword leftparenthesisKeyword (
 				partition_number (toKeyword partition_number)?
-			) (commaKeyword (partition_number ( toKeyword partition_number)?))* rightparenthesisKeyword
+			) (
+				commaKeyword (
+					partition_number (toKeyword partition_number)?
+				)
+			)* rightparenthesisKeyword
 		)?
-		| XML_COMPRESSION equalKeyword (onKeyword | offKeyword) (
+		| xml_compressionkeyword equalKeyword (
+			onKeyword
+			| offKeyword
+		) (
 			onKeyword partitionsKeyword leftparenthesisKeyword (
 				partition_number (toKeyword partition_number)?
-			) (commaKeyword (partition_number ( toKeyword partition_number)?))* rightparenthesisKeyword
+			) (
+				commaKeyword (
+					partition_number (toKeyword partition_number)?
+				)
+			)* rightparenthesisKeyword
 		)?
 	);
 
 create:
-	createKeyword tableKeyword (
-		object
-	) (asKeyword fileTable)? leftparenthesisKeyword (
+	createKeyword tableKeyword (object) leftparenthesisKeyword (
 		column_definition
 		| computed_column_definition
 		| column_set_definition
-		| ( table_constraint)? (commaKeyword table_constraint)*
+		| (table_constraint)? (commaKeyword table_constraint)*
 		| ( table_index)?
 	) (
 		commaKeyword (
 			column_definition
 			| computed_column_definition
 			| column_set_definition
-			| ( table_constraint)? (commaKeyword table_constraint)*
+			| (table_constraint)? (commaKeyword table_constraint)*
 			| ( table_index)?
 		)
 	)* (
-		periodKeyword forKeyword SYSTEM_TIME leftparenthesisKeyword system_start_time_column_name commaKeyword
-			system_end_time_column_name rightparenthesisKeyword
+		periodKeyword forKeyword system_timekeyword leftparenthesisKeyword
+			system_start_time_column_name commaKeyword system_end_time_column_name
+			rightparenthesisKeyword
 	)? rightparenthesisKeyword (
 		onKeyword (
-			partition_scheme_name leftparenthesisKeyword partition_column_name rightparenthesisKeyword
+			partition_scheme_name leftparenthesisKeyword partition_column_name
+				rightparenthesisKeyword
 			| filegroup
 			| doublequotationKeyword default doublequotationKeyword
 		)
 	)? (
-		TEXTIMAGE_ON (
+		textimage_onkeyword (
 			filegroup
 			| doublequotationKeyword default doublequotationKeyword
 		)
 	)? (
-		FILESTREAM_ON (
+		filestream_onkeyword (
 			partition_scheme_name
 			| filegroup
 			| doublequotationKeyword default doublequotationKeyword
 		)
 	)? (
-		withKeyword leftparenthesisKeyword table_option (commaKeyword table_option)* rightparenthesisKeyword
+		withKeyword leftparenthesisKeyword table_option (
+			commaKeyword table_option
+		)* rightparenthesisKeyword
 	)? (semicolonKeyword)?;
 data_type:
 	(type_schema_name dotKeyword)? type_name (
 		leftparenthesisKeyword (
 			precision ( commaKeyword scale)?
 			| max
-			| ( ( contentKeyword | documentKeyword))? xml_schema_collection
+			| (( contentKeyword | documentKeyword))? xml_schema_collection
 		) rightparenthesisKeyword
 	)?;
 column_index:
-	indexKeyword index_name (clusteredKeyword | nonclusteredKeyword)? (
-		withKeyword leftparenthesisKeyword index_option (commaKeyword index_option)* rightparenthesisKeyword
+	indexKeyword index_name (
+		clusteredKeyword
+		| nonclusteredKeyword
+	)? (
+		withKeyword leftparenthesisKeyword index_option (
+			commaKeyword index_option
+		)* rightparenthesisKeyword
 	)? (
 		onKeyword (
 			partition_scheme_name leftparenthesisKeyword column_name rightparenthesisKeyword
@@ -2242,7 +2510,7 @@ column_index:
 			| default
 		)
 	)? (
-		FILESTREAM_ON (
+		filestream_onkeyword (
 			filestream_filegroup_name
 			| partition_scheme_name
 			| doublequotationKeyword nullKeyword doublequotationKeyword
@@ -2251,23 +2519,32 @@ column_index:
 table_index:
 	(
 		(
-			indexKeyword index_name (uniqueKeyword)? (clusteredKeyword | nonclusteredKeyword)? leftparenthesisKeyword column_name (
+			indexKeyword index_name (uniqueKeyword)? (
+				clusteredKeyword
+				| nonclusteredKeyword
+			)? leftparenthesisKeyword column_name (
 				ascKeyword
 				| descKeyword
-			)? (commaKeyword column_name ( ascKeyword | descKeyword)?)* rightparenthesisKeyword
+			)? (
+				commaKeyword column_name (
+					ascKeyword
+					| descKeyword
+				)?
+			)* rightparenthesisKeyword
 			| indexKeyword index_name clusteredKeyword columnstoreKeyword (
 				orderKeyword leftparenthesisKeyword column_name (
 					commaKeyword column_name
 				)* rightparenthesisKeyword
 			)?
-			| indexKeyword index_name (nonclusteredKeyword)? columnstoreKeyword leftparenthesisKeyword column_name (
+			| indexKeyword index_name (nonclusteredKeyword)? columnstoreKeyword
+				leftparenthesisKeyword column_name (
 				commaKeyword column_name
 			)* rightparenthesisKeyword
 		) (
 			includeKeyword leftparenthesisKeyword column_name (
 				commaKeyword column_name
 			)* rightparenthesisKeyword
-		)? (whereKeyword filter_predicate)? (
+		)? (whereKeyword predicate)? (
 			withKeyword leftparenthesisKeyword index_option (
 				commaKeyword index_option
 			)* rightparenthesisKeyword
@@ -2278,38 +2555,19 @@ table_index:
 				| default
 			)
 		)? (
-			FILESTREAM_ON (
+			filestream_onkeyword (
 				filestream_filegroup_name
 				| partition_scheme_name
 				| doublequotationKeyword nullKeyword doublequotationKeyword
 			)
 		)?
 	);
-ledger_option:
-	(
-		(
-			LEDGER_VIEW equalKeyword schema_name dotKeyword ledger_view_name (
-				leftparenthesisKeyword ledger_view_option (
-					commaKeyword ledger_view_option
-				)* rightparenthesisKeyword
-			)?
-		)? (APPEND_ONLY equalKeyword onKeyword | offKeyword)?
-	);
-ledger_view_option:
-	(
-		(
-			TRANSACTION_ID_COLUMN_NAME equalKeyword transaction_id_column_name
-		)? (
-			SEQUENCE_NUMBER_COLUMN_NAME equalKeyword sequence_number_column_name
-		)? (
-			OPERATION_TYPE_COLUMN_NAME equalKeyword operation_type_id column_name
-		)? (
-			OPERATION_TYPE_DESC_COLUMN_NAME equalKeyword operation_type_desc_column_name
-		)?
-	);
 
 close_cursor:
-	closeKeyword (( ( globalKeyword)? cursor_name) | cursor_variable_name);
+	closeKeyword (
+		( ( globalKeyword)? cursor_name)
+		| cursor_variable_name
+	);
 
 dellocate_cursor:
 	deallocateKeyword (
@@ -2318,12 +2576,17 @@ dellocate_cursor:
 	);
 
 declare_cursor:
-	declareKeyword cursor_name cursorKeyword (localKeyword | globalKeyword)? (
-		FORWARD_ONLY
-		| scrollKeyword
-	)? (staticKeyword | keysetKeyword | dynamicKeyword | FAST_FORWARD)? (
-		READ_ONLY
-		| SCROLL_LOCKS
+	declareKeyword cursor_name cursorKeyword (
+		localKeyword
+		| globalKeyword
+	)? (forward_onlykeyword | scrollKeyword)? (
+		staticKeyword
+		| keysetKeyword
+		| dynamicKeyword
+		| FAST_FORWARD
+	)? (
+		read_onlykeyword
+		| scroll_lockskeyword
 		| optimisticKeyword
 	)? (TYPE_WARNING)? forKeyword select_statement (
 		forKeyword updateKeyword (ofKeyword column_list)?
@@ -2336,16 +2599,23 @@ fetch_cursor:
 			| priorKeyword
 			| firstKeyword
 			| lastKeyword
-			| absoluteKeyword ( n | atsymbolKeyword nvar)
-			| relativeKeyword ( n | atsymbolKeyword nvar)
+			| absoluteKeyword ( n | atsymbolKeyword variable)
+			| relativeKeyword ( n | atsymbolKeyword variable)
 		)? fromKeyword
-	)? (( ( globalKeyword)? cursor_name) | atsymbolKeyword cursor_variable_name) (
+	)? (
+		( ( globalKeyword)? cursor_name)
+		| atsymbolKeyword cursor_variable_name
+	) (
 		intoKeyword atsymbolKeyword variable_name (
 			commaKeyword atsymbolKeyword variable_name
 		)*
 	)?;
+n: numbersKeyword;
 open_cursor:
-	openKeyword (( ( globalKeyword)? cursor_name) | cursor_variable_name);
+	openKeyword (
+		( ( globalKeyword)? cursor_name)
+		| cursor_variable_name
+	);
 
 expression:
 	(
@@ -2356,8 +2626,6 @@ expression:
 		| surroundedExpression
 		| surroundedScalarSubquery
 		| unaryOperator
-		| ranking_windowed_function
-		| aggregate_windowed_function
 	) (binary_operator expression)*;
 
 unaryOperator: unary_operator expression;
@@ -2374,7 +2642,7 @@ scalar_expression:
 		| leftparenthesisKeyword scalar_subquery rightparenthesisKeyword
 		| ( unary_operator) expression
 		| expression ( binary_operator) expression
-	) (collateKeyword ( windows_collation_name)?)?;
+	);
 
 bulk:
 	bulkKeyword insertKeyword (
@@ -2383,7 +2651,7 @@ bulk:
 		| table_or_view_name
 	) fromKeyword data_file (
 		withKeyword leftparenthesisKeyword (
-			(commaKeyword)? DATA_SOURCE equalKeyword data_source_name
+			(commaKeyword)? data_sourcekeyword equalKeyword data_source_name
 		)? (
 			(commaKeyword)? codepageKeyword equalKeyword (
 				'rawKeyword'
@@ -2398,49 +2666,63 @@ bulk:
 				| 'native'
 				| 'widenative'
 			)
-		)? (( commaKeyword)? rowterminatorKeyword equalKeyword row_terminator)? (
-			(commaKeyword)? fieldterminatorKeyword equalKeyword field_terminator
-		)? (( commaKeyword)? formatKeyword equalKeyword 'csvKeyword')? (
-			(commaKeyword)? fieldquoteKeyword equalKeyword quote_characters
-		)? (( commaKeyword)? firstrowKeyword equalKeyword first_row)? (
-			( commaKeyword)? lastrowKeyword equalKeyword last_row
-		)? (( commaKeyword)? formatfileKeyword equalKeyword format_file_path)? (
-			(commaKeyword)? FORMATFILE_DATA_SOURCE equalKeyword data_source_name
-		)? (( commaKeyword)? maxerrorsKeyword equalKeyword max_errors)? (
-			( commaKeyword)? errorfileKeyword equalKeyword file_name
 		)? (
-			(commaKeyword)? ERRORFILE_DATA_SOURCE equalKeyword errorfile_data_source_name
-		)? (( commaKeyword)? keepidentityKeyword)? (( commaKeyword)? keepnullsKeyword)? (
-			( commaKeyword)? FIRE_TRIGGERS
-		)? (( commaKeyword)? CHECK_CONSTRAINTS)? (( commaKeyword)? tablockKeyword)? (
-			(commaKeyword)? orderKeyword leftparenthesisKeyword (column ( ascKeyword | descKeyword)?) (
-				commaKeyword column (ascKeyword | descKeyword)?
-			)* rightparenthesisKeyword
-		)? (( commaKeyword)? ROWS_PER_BATCH equalKeyword rows_per_batch)? (
-			(commaKeyword)? KILOBYTES_PER_BATCH equalKeyword kilobytes_per_batch
-		)? (( commaKeyword)? batchsizeKeyword equalKeyword batch_size)? rightparenthesisKeyword
+			(commaKeyword)? rowterminatorKeyword equalKeyword row_terminator
+		)? (
+			(commaKeyword)? fieldterminatorKeyword equalKeyword field_terminator
+		)? (
+			(commaKeyword)? formatKeyword equalKeyword 'csvKeyword'
+		)? (
+			(commaKeyword)? fieldquoteKeyword equalKeyword quote_characters
+		)? (
+			(commaKeyword)? firstrowKeyword equalKeyword first_row
+		)? (( commaKeyword)? lastrowKeyword equalKeyword last_row)? (
+			(commaKeyword)? formatfileKeyword equalKeyword format_file_path
+		)? (
+			(commaKeyword)? formatfile_data_sourcekeyword equalKeyword data_source_name
+		)? (
+			(commaKeyword)? maxerrorsKeyword equalKeyword max_errors
+		)? (
+			(commaKeyword)? errorfileKeyword equalKeyword file_name
+		)? (
+			(commaKeyword)? errorfile_data_sourcekeyword equalKeyword errorfile_data_source_name
+		)? (( commaKeyword)? keepidentityKeyword)? (
+			( commaKeyword)? keepnullsKeyword
+		)? (( commaKeyword)? FIRE_TRIGGERS)? (
+			( commaKeyword)? CHECK_CONSTRAINTS
+		)? (( commaKeyword)? tablockKeyword)? (
+			(commaKeyword)? orderKeyword leftparenthesisKeyword (
+				column ( ascKeyword | descKeyword)?
+			) (commaKeyword column (ascKeyword | descKeyword)?)* rightparenthesisKeyword
+		)? (
+			(commaKeyword)? rows_per_batchkeyword equalKeyword rows_per_batch
+		)? (
+			(commaKeyword)? kilobytes_per_batchkeyword equalKeyword kilobytes_per_batch
+		)? (
+			(commaKeyword)? batchsizeKeyword equalKeyword batch_size
+		)? rightparenthesisKeyword
 	)?;
 openrowset:
 	openrowsetKeyword leftparenthesisKeyword bulkKeyword data_file_path commaKeyword bulk_option (
 		commaKeyword bulk_option
 	)* rightparenthesisKeyword (
 		withKeyword leftparenthesisKeyword (
-			column_name sql_datatype (
-				column_path
-				| column_ordinal
-			)?
+			column_name sql_datatype column_path
+			| column_ordinal
 		)+ rightparenthesisKeyword
 	)?;
 
 bulk_option:
-	DATA_SOURCE equalKeyword data_source_name
-	| codepageKeyword equalKeyword ('acpKeyword' | 'oemKeyword' | 'rawKeyword' | 'code_page') datafiletypeKeyword equalKeyword (
-		charKeyword
-		| 'widechar'
-	)
+	data_sourcekeyword equalKeyword data_source_name
+	| codepageKeyword equalKeyword (
+		'acpKeyword'
+		| 'oemKeyword'
+		| 'rawKeyword'
+		| 'code_page'
+	) datafiletypeKeyword equalKeyword (charKeyword | 'widechar')
 	| formatKeyword equalKeyword file_format
 	| formatfileKeyword equalKeyword format_file_path
-	| FORMATFILE_DATA_SOURCE equalKeyword data_source_name
+	| formatfile_data_sourcekeyword equalKeyword data_source_name
 	| SINGLE_BLOB
 	| SINGLE_CLOB
 	| SINGLE_NCLOB
@@ -2449,49 +2731,46 @@ bulk_option:
 	| fieldquoteKeyword equalKeyword quote_character
 	| maxerrorsKeyword equalKeyword maximum_errors
 	| errorfileKeyword equalKeyword file_name
-	| ERRORFILE_DATA_SOURCE equalKeyword data_source_name
+	| errorfile_data_sourcekeyword equalKeyword data_source_name
 	| firstrowKeyword equalKeyword first_row
 	| lastrowKeyword equalKeyword last_row
-	| orderKeyword leftparenthesisKeyword (column ( ascKeyword | descKeyword)?) (
-		commaKeyword column (ascKeyword | descKeyword)?
-	)* rightparenthesisKeyword (uniqueKeyword)?
-	| ROWS_PER_BATCH equalKeyword rows_per_batch;
+	| orderKeyword leftparenthesisKeyword (
+		column ( ascKeyword | descKeyword)?
+	) (commaKeyword column (ascKeyword | descKeyword)?)* rightparenthesisKeyword (
+		uniqueKeyword
+	)?
+	| rows_per_batchkeyword equalKeyword rows_per_batch;
 
 rows_per_batch: numbersKeyword;
 maximum_errors: numbersKeyword;
 quote_character: stringKeyword;
 file_format: stringKeyword;
-column_ordinal:;
-column_path:;
-sql_datatype:;
+column_ordinal: numbersKeyword;
+column_path: string_expression;
+sql_datatype: datatype;
 data_file_path: stringKeyword;
-data_source_name:;
-data_file:;
-field_terminator:;
-row_terminator:;
-code_page:;
-last_row:;
-first_row:;
-quote_characters:;
-errorfile_data_source_name:;
-file_name:;
-max_errors:;
+data_source_name: string_expression;
+data_file: string_expression;
+field_terminator: string_expression;
+row_terminator: string_expression;
+code_page: string_expression;
+last_row: numbersKeyword;
+first_row: numbersKeyword;
+quote_characters: string_expression;
+errorfile_data_source_name: string_expression;
+file_name: string_expression;
+max_errors: numbersKeyword;
 format_file_path: stringKeyword;
-batch_size:;
-kilobytes_per_batch:;
-new_table: (
-		database_name dotKeyword schema_name dotKeyword table_name
-		| schema_name dotKeyword table_name
-		| table_name
-	);
+batch_size: numbersKeyword;
+kilobytes_per_batch: numbersKeyword;
 expression_name: identifiersKeyword;
 string_expression:
 	stringKeyword
 	| atsymbolKeyword variable
 	| (object dotKeyword)? column;
-escape_character: addKeyword;
-column: identifiersKeyword | typeKeyword | yearKeyword | actionKeyword;
-freetext_string: addKeyword;
+escape_character: string_expression;
+column: identifiersKeyword;
+freetext_string: string_expression;
 subquery: sELECTstatement;
 node_table_alias: identifiersKeyword;
 node_table_name: identifiersKeyword;
@@ -2501,181 +2780,26 @@ collation_name: identifiersKeyword;
 offset_row_count_expression: expression;
 integer_constant: numbersKeyword;
 fetch_row_count_expression: expression;
-word: addKeyword;
-phrase: addKeyword;
-prefix_term: addKeyword;
-proximity_term: addKeyword;
-integer: addKeyword;
-weight_value: addKeyword;
+word: string_expression;
+phrase: string_expression;
+prefix_term: string_expression;
+proximity_term: string_expression;
+integer: numbersKeyword;
+weight_value: numbersKeyword;
 column_expression:
 	expression
 	| leftparenthesisKeyword column_expression rightparenthesisKeyword;
 table_or_view_name: identifiersKeyword | documentKeyword;
 rowset_function: openrowset | openquery | openrowset2;
-bulk_column_alias: addKeyword;
+bulk_column_alias: identifiersKeyword;
 table_alias: identifiersKeyword;
-column_alias: identifiersKeyword | xmldataKeyword | stringKeyword | actionKeyword;
+column_alias:
+	identifiersKeyword
+	| xmldataKeyword
+	| stringKeyword
+	| actionKeyword;
 variable: identifiersKeyword;
-function_call: addKeyword;
-repeat_seed: addKeyword;
-left_table_source: table_source;
-right_table_source: table_source;
-aggregate_function: addKeyword;
-value_column: addKeyword;
-pivot_column: addKeyword;
-date_time_variable: addKeyword;
-date_time_literal: addKeyword;
-view_name: addKeyword;
-table_name: identifiersKeyword;
-field_name: addKeyword;
-property_name: addKeyword;
-udt_column_name: addKeyword;
-argument: addKeyword;
-method_name: addKeyword;
-integer_value: numbersKeyword;
-numeric_value: addKeyword;
-literal_constant: stringKeyword | numbersKeyword;
-variable_name: identifiersKeyword;
-hint_name: addKeyword;
-xml_plan: addKeyword;
-exposed_object_name: addKeyword;
-point_in_time: addKeyword;
-index_value: numbersKeyword;
-index_column_name: addKeyword;
-in: addKeyword;
-int: addKeyword;
-idoc: addKeyword;
-nvarchar: addKeyword;
-rowpattern: addKeyword;
-byte: addKeyword;
-flags: addKeyword;
-count: addKeyword;
-columns: addKeyword;
-openquery:
-	openqueryKeyword leftparenthesisKeyword linked_server commaKeyword query rightparenthesisKeyword;
-openrowset2:
-	openrowsetKeyword leftparenthesisKeyword provider_name commaKeyword (
-		datasource semicolonKeyword user_id semicolonKeyword password
-		| provider_string
-	) commaKeyword (( catalog dotKeyword)? ( schema_name dotKeyword)? object | query) rightparenthesisKeyword;
-provider_string: stringKeyword;
-datasource: stringKeyword;
-user_id: stringKeyword;
-password: stringKeyword;
-provider_name: stringKeyword;
-catalog: stringKeyword;
-query: stringKeyword;
-linked_server: identifiersKeyword;
-rowset_function_limited: openquery | openrowset | openrowset2;
-table_variable: identifiersKeyword;
-cursor_name: identifiersKeyword;
-cursor_variable_name: addKeyword;
-schema_name: identifiersKeyword;
-database_name: identifiersKeyword;
-server_name: identifiersKeyword;
-output_table: addKeyword;
-column_alias_identifier: addKeyword;
-from_table_name: identifiersKeyword;
-action: addKeyword;
-derived_table:
-	leftparenthesisKeyword subquery rightparenthesisKeyword (( asKeyword)? table_alias)?;
-dml_statement_with_output_clause: table;
-type_name: dataType1 | identifiersKeyword;
-type_schema_name: addKeyword;
-scale: numbersKeyword;
-precision: numbersKeyword;
-xml_schema_collection: addKeyword;
-max: addKeyword;
-mask_function: addKeyword;
-datetime2: addKeyword;
-system_start_time_column_name: addKeyword;
-constant_expression: expression;
-constraint_name: identifiersKeyword;
-system_end_time_column_name: addKeyword;
-bigint: addKeyword;
-start_transaction_id_column_name: addKeyword;
-end_sequence_number_column_name: addKeyword;
-start_sequence_number_column_name: addKeyword;
-end_transaction_id_column_name: addKeyword;
-trigger_name: addKeyword;
-source_partition_number_expression: numbersKeyword;
-target_partition_number_expression: addKeyword;
-default: addKeyword;
-filegroup: identifiersKeyword;
-partition_scheme_name: identifiersKeyword;
-number: numbersKeyword;
-history_table_name: addKeyword;
-partition_number: numbersKeyword;
-max_degree_of_parallelism: addKeyword;
-column_set_name: identifiersKeyword;
-directory_name: addKeyword;
-null: nullKeyword;
-table_predicate_function: addKeyword;
-time: addKeyword;
-key_name: identifiersKeyword;
-increment: numbersKeyword;
-seed: numbersKeyword;
-referenced_table_name: identifiersKeyword;
-partition_column_name: identifiersKeyword;
-fillfactor: numbersKeyword;
-logical_expression: search_condition_without_match;
-ref_column: identifiersKeyword;
-partition_number_expression: addKeyword;
-computed_column_expression: expression;
-ref_table: addKeyword;
-filegroup_name: addKeyword;
-index_name: addKeyword;
-filestream_filegroup_name: addKeyword;
-table_constraint: (constraintKeyword constraint_name)? (
-		(primaryKeyword keyKeyword | uniqueKeyword) (clusteredKeyword | nonclusteredKeyword)? leftparenthesisKeyword column (
-			ascKeyword
-			| descKeyword
-		)? (commaKeyword column ( ascKeyword | descKeyword)?)* rightparenthesisKeyword (
-			withKeyword fillfactorKeyword equalKeyword fillfactor
-		)? (
-			withKeyword leftparenthesisKeyword index_option (
-				commaKeyword index_option
-			)* rightparenthesisKeyword
-		)? (
-			onKeyword (
-				partition_scheme_name leftparenthesisKeyword partition_column_name rightparenthesisKeyword
-				| filegroup
-				| doublequotationKeyword default doublequotationKeyword
-			)
-		)?
-		| foreignKeyword keyKeyword leftparenthesisKeyword column (commaKeyword column)* rightparenthesisKeyword referencesKeyword
-			referenced_table_name (
-			leftparenthesisKeyword ref_column (commaKeyword ref_column)* rightparenthesisKeyword
-		)? (
-			onKeyword deleteKeyword (
-				noKeyword actionKeyword
-				| cascadeKeyword
-				| setKeyword nullKeyword
-				| setKeyword defaultKeyword
-			)
-		)? (
-			onKeyword updateKeyword (
-				noKeyword actionKeyword
-				| cascadeKeyword
-				| setKeyword nullKeyword
-				| setKeyword defaultKeyword
-			)
-		)? (notKeyword forKeyword replicationKeyword)?
-		| connectionKeyword leftparenthesisKeyword (node_table toKeyword node_table) (
-			commaKeyword (node_table toKeyword node_table)
-		)* rightparenthesisKeyword (onKeyword deleteKeyword ( noKeyword actionKeyword | cascadeKeyword))?
-		| defaultKeyword constant_expression forKeyword column (withKeyword valuesKeyword)?
-		| checkKeyword (notKeyword forKeyword replicationKeyword)? leftparenthesisKeyword logical_expression rightparenthesisKeyword
-	);
-node_table:;
-filter_predicate: addKeyword;
-sequence_number_column_name: addKeyword;
-transaction_id_column_name: addKeyword;
-ledger_view_name: addKeyword;
-operation_type_desc_column_name: addKeyword;
-operation_type_id: addKeyword;
-scalar_function:
-	(identifiersKeyword | maxKeyword) leftparenthesisKeyword (
+function_call: (identifiersKeyword | maxKeyword | concatKeyword) leftparenthesisKeyword (
 		(
 			(object dotKeyword)? column
 			| starKeyword
@@ -2694,34 +2818,221 @@ scalar_function:
 			)
 		)*
 	)? (
-		(asKeyword dataType1)? leftparenthesisKeyword (expression* | maxKeyword) rightparenthesisKeyword
+		(asKeyword dataType1)? leftparenthesisKeyword (
+			expression*
+			| maxKeyword
+		) rightparenthesisKeyword
+	)? rightparenthesisKeyword;
+repeat_seed: numbersKeyword;
+left_table_source: table_source;
+right_table_source: table_source;
+aggregate_function: COUNT | MIN | MAX | AVG | SUM;
+value_column: identifiersKeyword;
+pivot_column: identifiersKeyword;
+date_time_variable: string_expression;
+date_time_literal: string_expression;
+view_name: identifiersKeyword;
+table_name: identifiersKeyword;
+field_name: identifiersKeyword;
+property_name: identifiersKeyword;
+udt_column_name: identifiersKeyword;
+argument: expression;
+method_name: identifiersKeyword;
+integer_value: numbersKeyword;
+numeric_value: numbersKeyword;
+literal_constant: stringKeyword | numbersKeyword;
+variable_name: identifiersKeyword;
+hint_name: stringKeyword;
+xml_plan: string_expression;
+exposed_object_name: identifiersKeyword;
+point_in_time: string_expression;
+index_value: numbersKeyword | identifiersKeyword;
+index_column_name: identifiersKeyword;
+
+idoc: numbersKeyword;
+rowpattern: string_expression;
+flags: numbersKeyword;
+columns_count: numbersKeyword;
+openquery:
+	openqueryKeyword leftparenthesisKeyword linked_server commaKeyword query rightparenthesisKeyword
+		;
+openrowset2:
+	openrowsetKeyword leftparenthesisKeyword provider_name commaKeyword (
+		datasource semicolonKeyword user_id semicolonKeyword password
+		| provider_string
+	) commaKeyword (
+		(catalog dotKeyword)? (schema_name dotKeyword)? object
+		| query
+	) rightparenthesisKeyword;
+provider_string: string_expression;
+datasource: string_expression;
+user_id: string_expression;
+password: string_expression;
+provider_name: string_expression;
+catalog: string_expression;
+query: string_expression;
+linked_server: identifiersKeyword;
+rowset_function_limited: openquery | openrowset | openrowset2;
+table_variable: identifiersKeyword;
+cursor_name: identifiersKeyword;
+cursor_variable_name: identifiersKeyword;
+schema_name: identifiersKeyword;
+database_name: identifiersKeyword;
+server_name: identifiersKeyword;
+output_table: object;
+column_alias_identifier: identifiersKeyword;
+from_table_name: identifiersKeyword;
+derived_table:
+	leftparenthesisKeyword subquery rightparenthesisKeyword (
+		( asKeyword)? table_alias
+	)?;
+dml_statement_with_output_clause: table;
+type_name: dataType1 | identifiersKeyword;
+type_schema_name: identifiersKeyword;
+scale: numbersKeyword;
+precision: numbersKeyword;
+xml_schema_collection: identifiersKeyword;
+mask_function: string_expression;
+datetime2: string_expression;
+system_start_time_column_name: identifiersKeyword;
+constant_expression: expression;
+constraint_name: identifiersKeyword;
+system_end_time_column_name: identifiersKeyword;
+start_transaction_id_column_name: identifiersKeyword;
+end_sequence_number_column_name: identifiersKeyword;
+start_sequence_number_column_name: identifiersKeyword;
+end_transaction_id_column_name: identifiersKeyword;
+trigger_name: identifiersKeyword;
+source_partition_number_expression: numbersKeyword;
+target_partition_number_expression: numbersKeyword;
+default: defaultKeyword;
+filegroup: identifiersKeyword;
+partition_scheme_name: identifiersKeyword;
+number: numbersKeyword;
+history_table_name: identifiersKeyword;
+partition_number: numbersKeyword;
+max_degree_of_parallelism: numbersKeyword;
+column_set_name: identifiersKeyword;
+directory_name: identifiersKeyword;
+null: nullKeyword;
+time: numbersKeyword;
+key_name: identifiersKeyword;
+increment: numbersKeyword;
+seed: numbersKeyword;
+referenced_table_name: identifiersKeyword;
+partition_column_name: identifiersKeyword;
+fillfactor: numbersKeyword;
+logical_expression: search_condition_without_match;
+ref_column: identifiersKeyword;
+partition_number_expression: numbersKeyword;
+computed_column_expression: expression;
+ref_table: identifiersKeyword;
+filegroup_name: identifiersKeyword;
+index_name: identifiersKeyword;
+filestream_filegroup_name: identifiersKeyword;
+table_constraint: (constraintKeyword constraint_name)? (
+		(primaryKeyword keyKeyword | uniqueKeyword) (
+			clusteredKeyword
+			| nonclusteredKeyword
+		)? leftparenthesisKeyword column (
+			ascKeyword
+			| descKeyword
+		)? (commaKeyword column ( ascKeyword | descKeyword)?)* rightparenthesisKeyword (
+			withKeyword fillfactorKeyword equalKeyword fillfactor
+		)? (
+			withKeyword leftparenthesisKeyword index_option (
+				commaKeyword index_option
+			)* rightparenthesisKeyword
+		)? (
+			onKeyword (
+				partition_scheme_name leftparenthesisKeyword partition_column_name
+					rightparenthesisKeyword
+				| filegroup
+				| doublequotationKeyword default doublequotationKeyword
+			)
+		)?
+		| foreignKeyword keyKeyword leftparenthesisKeyword column (
+			commaKeyword column
+		)* rightparenthesisKeyword referencesKeyword referenced_table_name (
+			leftparenthesisKeyword ref_column (
+				commaKeyword ref_column
+			)* rightparenthesisKeyword
+		)? (
+			onKeyword deleteKeyword (
+				noKeyword actionKeyword
+				| cascadeKeyword
+				| setKeyword nullKeyword
+				| setKeyword defaultKeyword
+			)
+		)? (
+			onKeyword updateKeyword (
+				noKeyword actionKeyword
+				| cascadeKeyword
+				| setKeyword nullKeyword
+				| setKeyword defaultKeyword
+			)
+		)? (notKeyword forKeyword replicationKeyword)?
+		| connectionKeyword leftparenthesisKeyword (
+			node_table toKeyword node_table
+		) (commaKeyword (node_table toKeyword node_table))* rightparenthesisKeyword (
+			onKeyword deleteKeyword (
+				noKeyword actionKeyword
+				| cascadeKeyword
+			)
+		)?
+		| defaultKeyword constant_expression forKeyword column (
+			withKeyword valuesKeyword
+		)?
+		| checkKeyword (notKeyword forKeyword replicationKeyword)? leftparenthesisKeyword
+			logical_expression rightparenthesisKeyword
+	);
+node_table: identifiersKeyword;
+scalar_function:
+	(identifiersKeyword | maxKeyword | concatKeyword) leftparenthesisKeyword (
+		((object dotKeyword)? column | starKeyword | expression) (
+			commaKeyword (
+				(
+					(object dotKeyword)? column
+					| starKeyword
+					| expression
+				)
+			)
+		)*
+	)? (
+		(asKeyword dataType1)? leftparenthesisKeyword (
+			expression*
+			| maxKeyword
+		) rightparenthesisKeyword
 	)? rightparenthesisKeyword;
 
-execute_statement: (( execKeyword | executeKeyword))? (
+execute_statement: (execKeyword | executeKeyword) (
 		(atsymbolKeyword return_status equalKeyword)? (
 			module_name ( semicolonKeyword number)?
 			| atsymbolKeyword module_name_var
 		) (
-			(atsymbolKeyword parameter equalKeyword)? (
-				value
-				| atsymbolKeyword variable ( outputKeyword)?
-				| ( defaultKeyword)?
-			)
-		)? (
 			commaKeyword (
 				(atsymbolKeyword parameter equalKeyword)? (
 					value
 					| atsymbolKeyword variable ( outputKeyword)?
-					| ( defaultKeyword)?
+					| defaultKeyword
 				)
 			)?
-		)* (withKeyword execute_option (commaKeyword execute_option)*)?
+		)* (
+			withKeyword execute_option (
+				commaKeyword execute_option
+			)*
+		)?
 	) (semicolonKeyword)?
 	| (execKeyword | executeKeyword) leftparenthesisKeyword (
 		string_variable
 		| ( nKeyword)? 'tsql_string'
-	) (plusKeyword ( atsymbolKeyword string_variable | ( nKeyword)? 'tsql_string'))* rightparenthesisKeyword (
-		asKeyword ( loginKeyword | userKeyword) equalKeyword ' name '
+	) (
+		plusKeyword (
+			atsymbolKeyword string_variable
+			| ( nKeyword)? 'tsql_string'
+		)
+	)* rightparenthesisKeyword (
+		asKeyword (loginKeyword | userKeyword) equalKeyword ' name '
 	)? (semicolonKeyword)?
 	| (execKeyword | executeKeyword) leftparenthesisKeyword (
 		string_variable
@@ -2731,11 +3042,18 @@ execute_statement: (( execKeyword | executeKeyword))? (
 			atsymbolKeyword string_variable
 			| ( nKeyword)? 'command_string ( ? )?'
 		)
-	)* (( commaKeyword ( value | atsymbolKeyword variable ( outputKeyword)?)))* rightparenthesisKeyword (
-		asKeyword ( loginKeyword | userKeyword) equalKeyword ' name '
-	)? (atKeyword linked_server_name)? (atKeyword DATA_SOURCE data_source_name)? (
-		semicolonKeyword
-	)?;
+	)* (
+		(
+			commaKeyword (
+				value
+				| atsymbolKeyword variable ( outputKeyword)?
+			)
+		)
+	)* rightparenthesisKeyword (
+		asKeyword (loginKeyword | userKeyword) equalKeyword ' name '
+	)? (atKeyword linked_server_name)? (
+		atKeyword data_sourcekeyword data_source_name
+	)? (semicolonKeyword)?;
 
 execute_option:
 	(
@@ -2749,6 +3067,10 @@ execute_option:
 		)
 	);
 
+go: goKeyword end?;
+
+use: useKeyword object end?;
+
 result_sets_definition:
 	(
 		leftparenthesisKeyword (
@@ -2758,17 +3080,16 @@ result_sets_definition:
 			)?
 		) (
 			commaKeyword (
-				column_name data_type (collateKeyword collation_name)? (
-					nullKeyword
-					| notKeyword nullKeyword
-				)?
+				column_name data_type (
+					collateKeyword collation_name
+				)? (nullKeyword | notKeyword nullKeyword)?
 			)
 		)* rightparenthesisKeyword
 		| asKeyword objectKeyword (
-			db_name dotKeyword ( schema_name)? dotKeyword
+			db_name dotKeyword (schema_name)? dotKeyword
 			| schema_name dotKeyword
 		)? (table_name | view_name | table_valued_function_name)
-		| asKeyword typeKeyword ( schema_name dotKeyword)? table_type_name
+		| asKeyword typeKeyword (schema_name dotKeyword)? table_type_name
 		| asKeyword forKeyword xmlKeyword
 	);
 
@@ -2783,31 +3104,32 @@ module_name_var: identifiersKeyword;
 return_status: identifiersKeyword;
 parameter: identifiersKeyword;
 constant: stringKeyword | numbersKeyword;
-binary_operator: minusKeyword | starKeyword | plusKeyword | divisionKeyword | moduleKeyword;
-unary_operator: addKeyword;
-aggregate_windowed_function: addKeyword;
-ranking_windowed_function: addKeyword;
+binary_operator:
+	minusKeyword
+	| starKeyword
+	| plusKeyword
+	| divisionKeyword
+	| moduleKeyword;
+unary_operator: plusKeyword | minusKeyword | tildekeyword;
 scalar_subquery:
 	sELECTstatement
 	| leftparenthesisKeyword sELECTstatement rightparenthesisKeyword;
-nvar: addKeyword;
-n: addKeyword;
 select_statement: sELECTstatement;
-sample_number: addKeyword;
-user_defined_function: addKeyword;
-option: addKeyword;
-targetNameSpaceURI: addKeyword;
+sample_number: numbersKeyword;
+user_defined_function:
+	identifiersKeyword leftparenthesisKeyword expression (
+		commaKeyword expression
+	)* rightparenthesisKeyword;
+targetNameSpaceURI: string_expression;
 cTE_query_definition: sELECTstatement;
 elementName: stringKeyword;
-rootName: addKeyword;
-schemaDeclaration: addKeyword;
+rootName: string_expression;
 offset: numbersKeyword | nullKeyword;
 length: numbersKeyword | nullKeyword;
-fileTable: addKeyword;
 opendatasource:
-	opendatasourceKeyword leftparenthesisKeyword provider_name commaKeyword init_string rightparenthesisKeyword;
+	opendatasourceKeyword leftparenthesisKeyword provider_name commaKeyword init_string
+		rightparenthesisKeyword;
 init_string: stringKeyword;
-windows_collation_name: addKeyword;
 order_by_expression: expression (commaKeyword expression)*;
 column_name: (object dotKeyword)? column;
 common_table_expression_name: identifiersKeyword;
@@ -2817,7 +3139,11 @@ leftparenthesis: leftparenthesisKeyword;
 comma: commaKeyword;
 rightparenthesis: rightparenthesisKeyword;
 end: semicolonKeyword;
-setOperations: (unionKeyword ( allKeyword)? | exceptKeyword | intersectKeyword);
+setOperations: (
+		unionKeyword ( allKeyword)?
+		| exceptKeyword
+		| intersectKeyword
+	);
 whereClause: where search_condition;
 fromTable: fromKeyword table (commaKeyword table)*;
 having: havingKeyword search_condition;
@@ -2833,6 +3159,15 @@ into: intoKeyword object;
 
 on: onkeyword1 filegroup;
 
+truncate:
+	truncatekeyword tableKeyword object (
+		withKeyword leftparenthesisKeyword partitionsKeyword leftparenthesisKeyword (
+			partition_number_expression
+			| range
+		) (commaKeyword ( partition_number_expression | range))* rightparenthesisKeyword
+			rightparenthesisKeyword
+	)? end?;
+
 cteQueryDefinition:
 	asKeyword leftparenthesis cTE_query_definition rightparenthesis;
 surroundedColumnList:
@@ -2840,7 +3175,6 @@ surroundedColumnList:
 andSearchCondetion: and search_condition;
 match:
 	matchKeyword leftparenthesis graph_search_pattern rightparenthesis;
-
 
 containsKeyword: CONTAINS;
 
@@ -3452,29 +3786,113 @@ distinctKeyword: DISTINCT;
 
 goKeyword: GO;
 
-asKeyword : AS;
+asKeyword: AS;
 
-fromKeyword : FROM;
+fromKeyword: FROM;
 
-isKeyword : IS;
+isKeyword: IS;
 
-topKeyword : TOP;
+topKeyword: TOP;
 
-intoKeyword : INTO;
+intoKeyword: INTO;
 
-noKeyword : NO;
+noKeyword: NO;
 
-matchKeyword : MATCH;
+matchKeyword: MATCH;
 
-cascadeKeyword : CASCADE;
+cascadeKeyword: CASCADE;
 
-connectionKeyword : CONNECTION;
+connectionKeyword: CONNECTION;
 
-dataType1 : DATATYPE;
+dataType1: DATATYPE;
 
-havingKeyword : HAVING;
+havingKeyword: HAVING;
 
-onkeyword1 : ON;
+onkeyword1: ON;
 
- test : ((insert | update | sELECTstatement | create | declare_cursor| open_cursor | fetch_cursor| close_cursor | dellocate_cursor | delete | drop | alter) )* EOF  # Program;
-// test : create EOF # Program;
+truncatekeyword: TRUNCATE;
+
+data_sourcekeyword: DATA_SOURCE;
+
+rows_per_batchkeyword: ROWS_PER_BATCH;
+
+system_timekeyword: SYSTEM_TIME;
+max_grant_percentkeyword: MAX_GRANT_PERCENT;
+min_grant_percentkeyword: MIN_GRANT_PERCENT;
+spatial_window_max_cellskeyword: SPATIAL_WINDOW_MAX_CELLS;
+elsekeyword: ELSE;
+sequence_numberkeyword: SEQUENCE_NUMBER;
+change_trackingkeyword: CHANGE_TRACKING;
+track_columns_updatedkeyword: TRACK_COLUMNS_UPDATED;
+filestream_onkeyword: FILESTREAM_ON;
+system_versioningkeyword: SYSTEM_VERSIONING;
+history_tablekeyword: HISTORY_TABLE;
+data_consistency_checkkeyword: DATA_CONSISTENCY_CHECK;
+history_retention_periodkeyword: HISTORY_RETENTION_PERIOD;
+data_deletionkeyword: DATA_DELETION;
+filter_columnkeyword: FILTER_COLUMN;
+retention_periodkeyword: RETENTION_PERIOD;
+column_setkeyword: COLUMN_SET;
+lock_escalationkeyword: LOCK_ESCALATION;
+filetable_directorykeyword: FILETABLE_DIRECTORY;
+remote_data_archivekeyword: REMOTE_DATA_ARCHIVE;
+off_without_data_recoverykeyword: OFF_WITHOUT_DATA_RECOVERY;
+filter_predicatekeyword: FILTER_PREDICATE;
+migration_statekeyword: MIGRATION_STATE;
+sort_in_tempdbkeyword: SORT_IN_TEMPDB;
+data_compressionkeyword: DATA_COMPRESSION;
+wait_at_low_prioritykeyword: WAIT_AT_LOW_PRIORITY;
+max_durationkeyword: MAX_DURATION;
+abort_after_waitkeyword: ABORT_AFTER_WAIT;
+column_encryption_keykeyword: COLUMN_ENCRYPTION_KEY;
+encryption_typekeyword: ENCRYPTION_TYPE;
+pad_indexkeyword: PAD_INDEX;
+ignore_dup_keykeyword: IGNORE_DUP_KEY;
+statistics_norecomputekeyword: STATISTICS_NORECOMPUTE;
+allow_row_lockskeyword: ALLOW_ROW_LOCKS;
+allow_page_lockskeyword: ALLOW_PAGE_LOCKS;
+optimize_for_sequential_keykeyword: OPTIMIZE_FOR_SEQUENTIAL_KEY;
+xml_compressionkeyword: XML_COMPRESSION;
+textimage_onkeyword: TEXTIMAGE_ON;
+ledger_viewkeyword: LEDGER_VIEW;
+append_onlykeyword: APPEND_ONLY;
+transaction_id_column_namekeyword: TRANSACTION_ID_COLUMN_NAME;
+sequence_number_column_namekeyword: SEQUENCE_NUMBER_COLUMN_NAME;
+delaykeyword: DELAY;
+tildekeyword: TILDE;
+timekeyword: TIME;
+timeoutkeyword: TIMEOUT;
+operation_type_column_namekeyword: OPERATION_TYPE_COLUMN_NAME;
+forward_onlykeyword: FORWARD_ONLY;
+read_onlykeyword: READ_ONLY;
+scroll_lockskeyword: SCROLL_LOCKS;
+formatfile_data_sourcekeyword: FORMATFILE_DATA_SOURCE;
+errorfile_data_sourcekeyword: ERRORFILE_DATA_SOURCE;
+beginkeyword: BEGIN;
+transaction_idkeyword: TRANSACTION_ID;
+kilobytes_per_batchkeyword: KILOBYTES_PER_BATCH;
+whilekeyword: WHILE;
+breakkeyword: BREAK;
+continuekeyword: CONTINUE;
+waitforkeyword: WAITFOR;
+test: (
+		insert
+		| update
+		| sELECTstatement
+		| create
+		| declare_cursor
+		| open_cursor
+		| fetch_cursor
+		| close_cursor
+		| dellocate_cursor
+		| delete
+		| drop
+		| alter
+		| truncate
+		| use
+		| go
+		| if
+		| statement_block
+		| while
+	)* EOF # Program;
+// test: if EOF # Program;
