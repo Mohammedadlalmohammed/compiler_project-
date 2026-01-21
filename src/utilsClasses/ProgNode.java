@@ -10,7 +10,9 @@ public class ProgNode extends ASTNode{
 	
 	
 	public void addChild(ASTNode node) {
-		children.add(node);
+		if (node != null) {
+            children.add(node);
+        }
 	}
 
     @Override

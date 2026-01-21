@@ -3,7 +3,8 @@ package utilsClasses;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.antlr.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.Token;
 
 import antlr.SqlBaseVisitor;
@@ -19,6 +20,18 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 		this.vars = new ArrayList<String>();
 		this.semanticsErrors = new ArrayList<String>();
 	}
+
+    @Override
+    public ASTNode visitTerminal(TerminalNode node) {
+        String text = node.getText();
+        if (text.equals(":") || text.equals("(") || text.equals(")") || 
+            text.equals("[") || text.equals("]") || text.equals("<") || 
+            text.equals(">") || text.equals(",") || text.equals(".") || 
+            text.equals(";")) {
+            return null;
+        }
+        return new Base(text);
+    }
 
 	@Override
 	public ASTNode visitProgram(ProgramContext ctx) {
@@ -3323,32 +3336,17 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 
 	@Override
 	public ASTNode visitLeftparenthesis(SqlParser.LeftparenthesisContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Leftparenthesis");
+		return null;
 	}
 
 	@Override
 	public ASTNode visitComma(SqlParser.CommaContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Comma");
+		return null;
 	}
 
 	@Override
 	public ASTNode visitRightparenthesis(SqlParser.RightparenthesisContext ctx) {
-		ASTNode[] children = new ASTNode[ctx.getChildCount()];
-		for (int i = 0; i < ctx.getChildCount(); i++) {
-			children[i] = visit(ctx.getChild(i));
-		}
-
-		return new Base(children, "Rightparenthesis");
+		return null;
 	}
 
 	@Override
@@ -3524,7 +3522,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 @Override
 	public ASTNode visitLeftparenthesisKeyword(SqlParser.LeftparenthesisKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
+		return null;
 	}
 @Override
 	public ASTNode visitStarKeyword(SqlParser.StarKeywordContext ctx) {
@@ -3532,7 +3530,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 @Override
 	public ASTNode visitCommaKeyword(SqlParser.CommaKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
+		return null;
 	}
 @Override
 	public ASTNode visitSinglequotationKeyword(SqlParser.SinglequotationKeywordContext ctx) {
@@ -3540,7 +3538,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 @Override
 	public ASTNode visitRightparenthesisKeyword(SqlParser.RightparenthesisKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
+		return null;
 	}
 @Override
 	public ASTNode visitFreetextKeyword(SqlParser.FreetextKeywordContext ctx) {
@@ -3816,7 +3814,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 @Override
 	public ASTNode visitDotKeyword(SqlParser.DotKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
+		return null;
 	}
 @Override
 	public ASTNode visitTablesampleKeyword(SqlParser.TablesampleKeywordContext ctx) {
@@ -4200,7 +4198,7 @@ public class ASTBuilderVisitor extends SqlBaseVisitor<ASTNode> {
 	}
 @Override
 	public ASTNode visitSemicolonKeyword(SqlParser.SemicolonKeywordContext ctx) {
-		return new Base(ctx.getChild(0).getText());
+		return null;
 	}
 @Override
 	public ASTNode visitOutputKeyword(SqlParser.OutputKeywordContext ctx) {
