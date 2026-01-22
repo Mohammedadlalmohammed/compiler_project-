@@ -1,4 +1,6 @@
-SELECT EmployeeID, FirstName, LastName
-FROM Employees
-WHERE Salary > 3000
-ORDER BY LastName ASC;
+IF (4 > 3)
+BEGIN
+    SELECT 4;
+    SELECT 4;
+END
+

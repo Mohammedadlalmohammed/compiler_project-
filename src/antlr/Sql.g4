@@ -2348,17 +2348,15 @@ open_cursor:
 	openKeyword (( ( globalKeyword)? cursor_name) | cursor_variable_name);
 
 expression:
-	(
-		constant
-		| scalar_function
-		| objectDotColumn
-		| variableName
-		| surroundedExpression
-		| surroundedScalarSubquery
-		| unaryOperator
-		| ranking_windowed_function
-		| aggregate_windowed_function
-	) (binary_operator expression)*;
+	surroundedExpression
+	| surroundedScalarSubquery
+	| constant
+	| scalar_function
+	| objectDotColumn
+	| variableName
+	| unary_operator expression
+	| expression (starKeyword | divisionKeyword | moduleKeyword) expression
+	| expression (plusKeyword | minusKeyword) expression;
 
 unaryOperator: unary_operator expression;
 
