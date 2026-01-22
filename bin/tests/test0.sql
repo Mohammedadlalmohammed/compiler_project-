@@ -1,0 +1,6 @@
+IF (4 > 3)
+BEGIN
+    SELECT 4;
+    SELECT 4;
+END
+
