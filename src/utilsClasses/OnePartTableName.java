@@ -8,11 +8,18 @@ public class OnePartTableName extends ASTNode {
 		this.table_name = table_name;
 	}
 
-	@Override
-	public String prettyPrint(String indent) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(indent).append("TableReference:\n\t");
-		sb.append(indent).append("Table Name: " + table_name).append("\n");
-		return sb.toString();
-	}
+    @Override
+    public java.util.List<ASTNode> getChildren() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "TableReference (Table Name: " + table_name + ")";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }

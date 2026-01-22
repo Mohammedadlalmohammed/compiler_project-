@@ -8,11 +8,18 @@ public class WithCommonTableExpression extends ASTNode {
 		this.with_keyword = with_keyword;
 	}
 
-	@Override
-	public String prettyPrint(String indent) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(indent).append("Common Table Expression:\n");
-		sb.append(indent + "\t").append("with keyword : " + with_keyword).append("\n");
-		return sb.toString();
-	}
+    @Override
+    public java.util.List<ASTNode> getChildren() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "Common Table Expression (keyword: " + with_keyword + ")";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }

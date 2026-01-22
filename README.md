@@ -39,6 +39,7 @@ java -jar lib/antlr-4.13.2-complete.jar -o src/antlr -Dlanguage=Java src/antlr/S
 ```
 
 This command:
+
 - Generates Java source files from `Sql.g4`
 - Places the generated files in `src/antlr`
 - Enables the Visitor pattern
@@ -54,6 +55,7 @@ javac -cp ./lib/antlr-4.13.2-complete.jar -d bin src/antlr/*.java src/app/*.java
 ```
 
 This will:
+
 - Include ANTLR in the classpath
 - Compile all source files
 - Output compiled `.class` files into the `bin/` directory
@@ -69,6 +71,7 @@ java -cp ".\\lib\\antlr-4.13.2-complete.jar;.\\bin" app.Main src/tests/test1.txt
 ```
 
 Where:
+
 - `app.Main` is the main entry point of the program
 - `src/tests/test1.txt` is the input file to be parsed
 
@@ -93,4 +96,3 @@ java -cp "./lib/antlr-4.13.2-complete.jar:./bin" app.Main src/tests/test1.txt
 ## License
 
 This project is for educational purposes.
-

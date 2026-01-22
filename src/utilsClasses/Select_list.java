@@ -8,11 +8,18 @@ public class Select_list extends ASTNode {
 		this.column = column;
 	}
 
-	@Override
-	public String prettyPrint(String indent) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(indent).append("Column list:\n\t");
-		sb.append(indent).append("Column Name: " + column).append("\n");
-		return sb.toString();
-	}
+    @Override
+    public java.util.List<ASTNode> getChildren() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "Select_list (Column: " + column + ")";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }

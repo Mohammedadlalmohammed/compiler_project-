@@ -13,9 +13,18 @@ public class Variable extends ASTNode {
 //		return indent + "Variable: " + name;
 //	}
 
-	@Override
-	public String prettyPrint(String indent) {
-		// TODO Auto-generated method stub
-		return indent + "Variable: " + id;
-	}
+    @Override
+    public java.util.List<ASTNode> getChildren() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "Variable: " + id;
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }

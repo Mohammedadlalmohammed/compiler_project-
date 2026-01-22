@@ -8,11 +8,18 @@ public class ExpressionName extends ASTNode {
 		this.keyword = keyword;
 	}
 
-	@Override
-	public String prettyPrint(String indent) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(indent).append("ExpressionName :\n");
-		sb.append(indent + "\t").append("keyword : " + keyword).append("\n");
-		return sb.toString();
-	}
+    @Override
+    public java.util.List<ASTNode> getChildren() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "ExpressionName (Keyword: " + keyword + ")";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }

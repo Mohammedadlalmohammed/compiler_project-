@@ -10,14 +10,19 @@ public class VariableDeclaration extends ASTNode{
 		this.type=type;
 		this.value=value;
 	}
-	@Override
-	public String prettyPrint(String indent) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(indent).append("Declaration:\n");
-        sb.append(indent).append("	Variable: ").append(id).append("\n");
-        sb.append(indent).append("	Type: ").append(type).append("\n");
-        sb.append(indent).append("	value: ").append(value).append("\n");
-        return sb.toString();
-	}
+    @Override
+    public java.util.List<ASTNode> getChildren() {
+        return java.util.Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "VariableDeclaration (Variable: " + id + ", Type: " + type + ", Value: " + value + ")";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 
 }

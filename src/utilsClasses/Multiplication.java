@@ -1,5 +1,7 @@
 package utilsClasses;
 
+import java.util.List;
+
 public class Multiplication extends ASTNode {
 
 	private ASTNode left;
@@ -19,13 +21,21 @@ public class Multiplication extends ASTNode {
 	// return left.toString() + " * " + right.toString();
 	// }
 
-	@Override
-	public String prettyPrint(String indent) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(indent).append("Multiplication:\n");
-		sb.append(left.prettyPrint(indent + "	")).append("\n");
-		sb.append(op);
-		sb.append(right.prettyPrint(indent + "	"));
-		return sb.toString();
-	}
+    @Override
+    public List<ASTNode> getChildren() {
+        List<ASTNode> children = new java.util.ArrayList<>();
+        if (left != null) children.add(left);
+        if (right != null) children.add(right);
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "Multiplication (" + op + ")";
+    }
+
+    @Override
+    public String prettyPrint(String indent) {
+        return printTree();
+    }
 }

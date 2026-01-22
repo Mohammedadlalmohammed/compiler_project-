@@ -1,5 +1,7 @@
 package utilsClasses;
 
+import java.util.List;
+
 public class BinaryExpression extends ASTNode {
 
     private ASTNode left;
@@ -11,11 +13,20 @@ public class BinaryExpression extends ASTNode {
     }
 
     @Override
+    public List<ASTNode> getChildren() {
+        java.util.List<ASTNode> children = new java.util.ArrayList<>();
+        if (left != null) children.add(left);
+        if (right != null) children.add(right);
+        return children;
+    }
+
+    @Override
+    public String toString() {
+        return "BinaryExpression";
+    }
+
+    @Override
     public String prettyPrint(String indent) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(indent).append("BinaryExpression:\n");
-        sb.append(left.prettyPrint(indent + "	")).append("\n");
-        sb.append(right.prettyPrint(indent + "	"));
-        return sb.toString();
+        return printTree();
     }
 }
