@@ -36,12 +36,15 @@ public class ASTViewer extends JFrame {
         private final int HORIZONTAL_GAP = 50;
         private int totalWidth = 0;
         private int totalHeight = 0;
+        private double scale = 1.0;
+        private static final double MIN_SCALE = 0.1;
+        private static final double MAX_SCALE = 5.0;
 
         public ASTPanel(ASTNode root) {
             this.root = root;
             setBackground(Color.WHITE);
             calculatePositions();
-            setPreferredSize(new Dimension(totalWidth + 100, totalHeight + 100));
+            updatePreferredSize();
 
             MouseAdapter ma = new MouseAdapter() {
                 private Point origin;
@@ -73,10 +76,36 @@ public class ASTViewer extends JFrame {
                         }
                     }
                 }
+
+                @Override
+                public void mouseWheelMoved(java.awt.event.MouseWheelEvent e) {
+                    if (e.isControlDown()) {
+                        double delta = 0.05 * e.getWheelRotation();
+                        double oldScale = scale;
+                        scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, scale - delta));
+                        
+                        if (oldScale != scale) {
+                            updatePreferredSize();
+                            revalidate();
+                            repaint();
+                        }
+                    } else {
+                        // Pass to parent (scroll pane) if Ctrl is not pressed
+                        getParent().dispatchEvent(e);
+                    }
+                }
             };
             addMouseListener(ma);
             addMouseMotionListener(ma);
+            addMouseWheelListener(ma);
             setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        }
+
+        private void updatePreferredSize() {
+            setPreferredSize(new Dimension(
+                (int) ((totalWidth + 100) * scale),
+                (int) ((totalHeight + 100) * scale)
+            ));
         }
 
         private void calculatePositions() {
@@ -118,6 +147,10 @@ public class ASTViewer extends JFrame {
             super.paintComponent(g);
             Graphics2D g2 = (Graphics2D) g;
             g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            
+            // Apply scale
+            g2.scale(scale, scale);
+            
             drawSubtree(g2, root);
         }
 
